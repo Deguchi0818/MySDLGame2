@@ -1,6 +1,4 @@
 ﻿  Game.cpp
-C:\Users\PC_User\Documents\MySDLGame\Project1\Game.cpp(270,23): warning C4267: '初期化中': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
-  Player.cpp
-C:\Users\PC_User\Documents\MySDLGame\Project1\Player.cpp(246,32): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
+  main.cpp
   コードを生成中...
-  Project1.vcxproj -> C:\Users\PC_User\Documents\MySDLGame\x64\Debug\Project1.exe
+  Project1.vcxproj -> D:\User\Documents\MySDLGame2\x64\Debug\Project1.exe
