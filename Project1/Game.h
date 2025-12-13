@@ -6,6 +6,9 @@
 #include<vector>
 #include<fstream>
 
+#include "Player.h"
+#include "Collider.h"
+
 using namespace std;
 
 class Game
@@ -35,6 +38,8 @@ private:
 
 	SDL_Window* m_window{ nullptr };
 	SDL_Renderer* m_renderer{ nullptr };
+
+	unique_ptr<Player> m_player;
 
 	int m_width{ 800 };
 	int m_height{ 600 };
