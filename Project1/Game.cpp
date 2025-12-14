@@ -91,6 +91,12 @@ void Game::processEvents()
 void Game::update(float dt) 
 {
 	m_player->update(dt, m_levelWidth, m_levelHeight);
+
+	// プレイヤーの中心座標を計算
+	//SDL_FRect pRect = m_player->collider().rect();
+	//float playerCenterX = pRect.x + pRect.w / 2.0f;
+	//float playerCenterY = pRect.y + pRect.h / 2.0f;
+
 }
 
 void Game::render()
@@ -98,12 +104,9 @@ void Game::render()
 	SDL_SetRenderDrawColor(m_renderer, 0, 0, 64, 255);
 	SDL_RenderClear(m_renderer);
 
+
 	m_player->render(m_renderer);
 
-	// プレイヤーの中心座標を計算
-	SDL_FRect pRect = m_player->collider().rect();
-	float playerCenterX = pRect.x + pRect.w / 2.0f;
-	float playerCenterY = pRect.y + pRect.h / 2.0f;
 
 	// 画面に反映
 	SDL_RenderPresent(m_renderer);

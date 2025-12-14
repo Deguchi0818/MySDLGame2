@@ -24,7 +24,51 @@ Player::~Player()
 
 void Player::update(float dt, int screenW, int screenH) 
 {
+	SDL_FRect r = m_collider.rect();
 
+	const bool* keys = SDL_GetKeyboardState(nullptr);
+
+	bool curA = keys[SDL_SCANCODE_A];
+	bool curD = keys[SDL_SCANCODE_D];
+
+	bool curJump = keys[SDL_SCANCODE_SPACE];
+	velX = 0.0f;
+
+	if (curA) 
+	{
+		velX -= speed;
+	}
+
+	if (curD) 
+	{
+		velX += speed;
+	}
+
+	if (curJump) 
+	{
+		velY = jumpPower;
+	}
+
+	r.x += velX * dt;
+	velY += gravity * dt;
+	r.y += velY *dt;
+
+	if (r.x < 0)
+	{
+		r.x = 0;
+	}
+	if (r.x + r.w > screenW)
+	{
+		r.x = screenW - r.w;
+	}
+
+	if (r.y + r.h > screenH)
+	{
+		r.y = screenH - r.h;
+		velY = 0.0f;
+	}
+
+	m_collider.setPosition(r.x, r.y);
 }
 
 void Player::render(SDL_Renderer* renderer) 
