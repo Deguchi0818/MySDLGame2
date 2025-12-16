@@ -44,6 +44,7 @@ bool Game::init(const string& title, int width, int height)
 	);
 
 	m_grounds.emplace_back(0, 550, 800, 50);
+	m_grounds.emplace_back(0, 350, 50, 300);
 
 	m_isRunning = true;
 
