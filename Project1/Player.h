@@ -17,15 +17,20 @@ public:
 	BoxCollider& collider() { return m_collider; }
 	const BoxCollider& collider() const { return m_collider; }
 
+	void setOnGround(bool on);
+	bool isOnGround() const;
+
 	float velX = 0.0f;
 	float velY = 0.0f;
 
 private:
 	BoxCollider m_collider;
 
-	float speed = 150.0f;
+	float speed = 200.0f;
 	float gravity = 1500.0f;
 	float jumpPower = -500.0f;
+
+	bool m_onGround = false;
 
 	SDL_Texture* m_texture = nullptr;
 };

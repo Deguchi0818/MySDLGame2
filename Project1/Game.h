@@ -41,6 +41,8 @@ private:
 
 	unique_ptr<Player> m_player;
 
+	vector<BoxCollider> m_grounds;
+
 	int m_width{ 800 };
 	int m_height{ 600 };
 

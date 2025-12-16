@@ -32,7 +32,9 @@ void Player::update(float dt, int screenW, int screenH)
 	bool curD = keys[SDL_SCANCODE_D];
 
 	bool curJump = keys[SDL_SCANCODE_SPACE];
-	velX = 0.0f;
+
+	bool canJump = m_onGround;
+	velX *= 0.0f;
 
 	if (curA) 
 	{
@@ -44,9 +46,10 @@ void Player::update(float dt, int screenW, int screenH)
 		velX += speed;
 	}
 
-	if (curJump) 
+	if (curJump && canJump) 
 	{
 		velY = jumpPower;
+		setOnGround(false);
 	}
 
 	r.x += velX * dt;
@@ -70,6 +73,21 @@ void Player::update(float dt, int screenW, int screenH)
 
 	m_collider.setPosition(r.x, r.y);
 }
+
+void Player::setOnGround(bool on) 
+{
+	if (on) 
+	{
+		velY = 0.0f;
+	}
+	m_onGround = on;
+}
+
+bool Player::isOnGround() const 
+{
+	return m_onGround;
+}
+
 
 void Player::render(SDL_Renderer* renderer) 
 {

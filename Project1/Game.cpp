@@ -43,6 +43,8 @@ bool Game::init(const string& title, int width, int height)
 		"assets/player.png"
 	);
 
+	m_grounds.emplace_back(0, 550, 800, 50);
+
 	m_isRunning = true;
 
 	return true;
@@ -92,11 +94,26 @@ void Game::update(float dt)
 {
 	m_player->update(dt, m_levelWidth, m_levelHeight);
 
+	BoxCollider& pCol = m_player->collider();
+
+	for (auto& g : m_grounds) 
+	{
+		if (pCol.intersect(g)) 
+		{
+			const SDL_FRect& p = pCol.rect();
+			const SDL_FRect& gr = g.rect();
+			float newY = gr.y - p.h;
+			pCol.setPosition(p.x, newY);
+			m_player->setOnGround(true);
+		}
+	}
+
 	// プレイヤーの中心座標を計算
 	//SDL_FRect pRect = m_player->collider().rect();
 	//float playerCenterX = pRect.x + pRect.w / 2.0f;
 	//float playerCenterY = pRect.y + pRect.h / 2.0f;
 
+	//pCol.rect();
 }
 
 void Game::render()
@@ -106,6 +123,14 @@ void Game::render()
 
 
 	m_player->render(m_renderer);
+
+	SDL_SetRenderDrawColor(m_renderer, 100, 50, 0, 255);
+	for (auto& g : m_grounds) 
+	{
+		SDL_FRect r = g.rect();
+
+		SDL_RenderFillRect(m_renderer, &r);
+	}
 
 
 	// 画面に反映
