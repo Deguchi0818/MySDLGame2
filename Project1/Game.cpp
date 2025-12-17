@@ -107,12 +107,12 @@ void Game::update(float dt)
 		}
 
 		const SDL_FRect& g = ground.rect();
-		float overlapLeft = (p.x + p.w) - g.x;
-		float overlapRight = (g.x + g.w) - p.x;
+		float overlapLeft = (p.x + p.w) - g.x;		// プレイヤー右側が地面の左側を越えた量
+		float overlapRight = (g.x + g.w) - p.x;		// 地面の右側がプレイヤー左側を越えた量
 		float penX = (overlapLeft < overlapRight) ? overlapLeft : overlapRight;
 
-		float overlapTop = (p.y + p.h) - g.y;
-		float overlapBottom = (g.y + g.h) - p.y;
+		float overlapTop = (p.y + p.h) - g.y;		// プレイヤー下側が地面の上側を越えた量
+		float overlapBottom = (g.y + g.h) - p.y;	// 地面の下側がプレイヤー上側を越えた量
 		float penY = (overlapTop < overlapBottom) ? overlapTop : overlapBottom;
 
 		if (penX < penY)
