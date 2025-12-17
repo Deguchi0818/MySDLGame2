@@ -45,6 +45,7 @@ bool Game::init(const string& title, int width, int height)
 
 	m_grounds.emplace_back(0, 550, 800, 50);
 	m_grounds.emplace_back(0, 350, 50, 300);
+	m_grounds.emplace_back(300, 250, 50, 200);
 
 	m_isRunning = true;
 
@@ -96,17 +97,57 @@ void Game::update(float dt)
 	m_player->update(dt, m_levelWidth, m_levelHeight);
 
 	BoxCollider& pCol = m_player->collider();
+	SDL_FRect p = pCol.rect();
 
-	for (auto& g : m_grounds) 
+	for (auto& ground : m_grounds) 
 	{
-		if (pCol.intersect(g)) 
+		if (!pCol.intersect(ground)) 
 		{
-			const SDL_FRect& p = pCol.rect();
-			const SDL_FRect& gr = g.rect();
-			float newY = gr.y - p.h;
-			pCol.setPosition(p.x, newY);
-			m_player->setOnGround(true);
+			continue;
 		}
+
+		const SDL_FRect& g = ground.rect();
+		float overlapLeft = (p.x + p.w) - g.x;
+		float overlapRight = (g.x + g.w) - p.x;
+		float penX = (overlapLeft < overlapRight) ? overlapLeft : overlapRight;
+
+		float overlapTop = (p.y + p.h) - g.y;
+		float overlapBottom = (g.y + g.h) - p.y;
+		float penY = (overlapTop < overlapBottom) ? overlapTop : overlapBottom;
+
+		if (penX < penY)
+		{
+			// X軸方向の貫通が小さい -> X軸方向に修正
+			if (overlapLeft < overlapRight)
+			{
+				// 左側から衝突
+				pCol.setPosition(g.x - p.w, p.y);
+			}
+			else
+			{
+				// 右側から衝突
+				pCol.setPosition(g.x + g.w, p.y);
+			}
+			m_player->velX = 0.0f;
+		}
+		else
+		{
+			// Y軸方向の貫通が小さい -> Y軸方向に修正
+			if (overlapTop < overlapBottom)
+			{
+				// 上側から衝突
+				pCol.setPosition(p.x, g.y - p.h);
+				m_player->velY = 0.0f;
+				m_player->setOnGround(true);
+			}
+			else
+			{
+				// 下側から衝突
+				pCol.setPosition(p.x, g.y + g.h);
+				m_player->velY = 0.0f;
+			}
+		}
+		p = pCol.rect();
 	}
 
 	// プレイヤーの中心座標を計算

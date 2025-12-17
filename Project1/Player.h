@@ -23,8 +23,12 @@ public:
 	float velX = 0.0f;
 	float velY = 0.0f;
 
+	const SDL_FRect& getPrevRect() const { return m_prevRect; }
+
 private:
 	BoxCollider m_collider;
+
+	SDL_FRect m_prevRect;
 
 	float speed = 200.0f;
 	float gravity = 1500.0f;

@@ -1,68 +1,66 @@
 ﻿  Game.cpp
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(241,76): warning C4244: '引数': '_Ty' から 'float' への変換です。データが失われる可能性があります。
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(241,76): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(241,76): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(241,76): warning C4244:             _Ty=int
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(241,76): warning C4244:         ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(492,85): warning C4244: '引数': '_Ty' から 'float' への変換です。データが失われる可能性があります。
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(492,85): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(492,85): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(492,85): warning C4244:             _Ty=int
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(492,85): warning C4244:         ]
   (ソース ファイル 'Game.cpp' をコンパイルしています)
-  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(241,76):
-  テンプレートインスタンス化コンテキスト (最初に最も古いもの) は
-  	C:\Users\PC_User\Documents\MySDLGame2\Project1\Game.cpp(46,11):
-  	コンパイル対象の関数 テンプレート インスタンス化 '_Ty &std::vector<_Ty,std::allocator<_Ty>>::emplace_back<int,int,int,int>(int &&,int &&,int &&,int &&)' のリファレンスを確認してください
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(492,85):
+      テンプレートインスタンス化コンテキスト (最初に最も古いもの) は
+          C:\Users\ktc\Documents\MySDLGame2\Project1\Game.cpp(46,12):
+          コンパイル対象の関数 テンプレート インスタンス化 'BoxCollider &std::vector<BoxCollider,std::allocator<BoxCollider>>::emplace_back<int,int,int,int>(int &&,int &&,int &&,int &&)' のリファレンスを確認してください
+              C:\Users\ktc\Documents\MySDLGame2\Project1\Game.cpp(46,24):
+              'Game::init' の 'std::vector<BoxCollider,std::allocator<BoxCollider>>::emplace_back' への最初の参照を参照してください
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vector(909,24):
+          コンパイル対象の関数 テンプレート インスタンス化 '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_one_at_back<int,int,int,int>(int &&,int &&,int &&,int &&)' のリファレンスを確認してください
           with
           [
               _Ty=BoxCollider
           ]
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\vector(862,24):
-  	コンパイル対象の関数 テンプレート インスタンス化 '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_one_at_back<int,int,int,int>(int &&,int &&,int &&,int &&)' のリファレンスを確認してください
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vector(830,20):
+          コンパイル対象の関数 テンプレート インスタンス化 '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_back_with_unused_capacity<int,int,int,int>(int &&,int &&,int &&,int &&)' のリファレンスを確認してください
           with
           [
               _Ty=BoxCollider
           ]
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\vector(780,20):
-  	コンパイル対象の関数 テンプレート インスタンス化 '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_back_with_unused_capacity<int,int,int,int>(int &&,int &&,int &&,int &&)' のリファレンスを確認してください
-          with
-          [
-              _Ty=BoxCollider
-          ]
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\vector(798,27):
-  	コンパイル対象の関数 テンプレート インスタンス化 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,int,int,int,int>(_Alloc &,_Objty *const ,int &&,int &&,int &&,int &&)' のリファレンスを確認してください
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vector(848,27):
+          コンパイル対象の関数 テンプレート インスタンス化 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,int,int,int,int>(_Alloc &,_Objty *const ,int &&,int &&,int &&,int &&)' のリファレンスを確認してください
           with
           [
               _Alloc=std::allocator<BoxCollider>,
               _Ty=BoxCollider,
               _Objty=BoxCollider
           ]
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xmemory(721,14):
-  	コンパイル対象の関数 テンプレート インスタンス化 '_Ty *std::construct_at<_Objty,int,int,int,int,0x0>(_Ty *const ,int &&,int &&,int &&,int &&) noexcept(<expr>)' のリファレンスを確認してください
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xmemory(730,14):
+          コンパイル対象の関数 テンプレート インスタンス化 '_Ty *std::construct_at<_Objty,int,int,int,int>(_Ty *const ,int &&,int &&,int &&,int &&) noexcept(<expr>)' のリファレンスを確認してください
           with
           [
               _Ty=BoxCollider,
               _Objty=BoxCollider
           ]
   
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(242,90): warning C4244: '引数': '_Ty' から 'float' への変換です。データが失われる可能性があります。
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(242,90): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(242,90): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(242,90): warning C4244:             _Ty=int
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(242,90): warning C4244:         ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(493,90): warning C4244: '引数': '_Ty' から 'float' への変換です。データが失われる可能性があります。
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(493,90): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(493,90): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(493,90): warning C4244:             _Ty=int
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(493,90): warning C4244:         ]
   (ソース ファイル 'Game.cpp' をコンパイルしています)
-  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xutility(242,90):
-  テンプレートインスタンス化コンテキスト (最初に最も古いもの) は
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\vector(798,27):
-  	コンパイル対象の関数 テンプレート インスタンス化 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,int,int,int,int>(_Alloc &,_Objty *const ,int &&,int &&,int &&,int &&)' のリファレンスを確認してください
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xutility(493,90):
+      テンプレートインスタンス化コンテキスト (最初に最も古いもの) は
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vector(848,27):
+          コンパイル対象の関数 テンプレート インスタンス化 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,int,int,int,int>(_Alloc &,_Objty *const ,int &&,int &&,int &&,int &&)' のリファレンスを確認してください
           with
           [
               _Alloc=std::allocator<BoxCollider>,
               _Ty=BoxCollider,
               _Objty=BoxCollider
           ]
-  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\xmemory(721,14):
-  	コンパイル対象の関数 テンプレート インスタンス化 '_Ty *std::construct_at<_Objty,int,int,int,int,0x0>(_Ty *const ,int &&,int &&,int &&,int &&) noexcept(false)' のリファレンスを確認してください
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\xmemory(730,14):
+          コンパイル対象の関数 テンプレート インスタンス化 '_Ty *std::construct_at<_Objty,int,int,int,int>(_Ty *const ,int &&,int &&,int &&,int &&) noexcept(false)' のリファレンスを確認してください
           with
           [
               _Ty=BoxCollider,
               _Objty=BoxCollider
           ]
   
-  Project1.vcxproj -> C:\Users\PC_User\Documents\MySDLGame2\x64\Debug\Project1.exe
+  Project1.vcxproj -> C:\Users\ktc\Documents\MySDLGame2\x64\Debug\Project1.exe

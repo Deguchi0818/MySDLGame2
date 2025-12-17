@@ -26,6 +26,8 @@ void Player::update(float dt, int screenW, int screenH)
 {
 	SDL_FRect r = m_collider.rect();
 
+	m_prevRect = m_collider.rect();
+
 	const bool* keys = SDL_GetKeyboardState(nullptr);
 
 	bool curA = keys[SDL_SCANCODE_A];
