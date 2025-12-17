@@ -43,8 +43,10 @@ private:
 
 	vector<BoxCollider> m_grounds;
 
-	int m_width{ 800 };
-	int m_height{ 600 };
+	int m_width{ 0 };
+	int m_height{ 0 };
+
+	SDL_FRect m_camera{ 0.0f, 0.0f, 800.0f, 600.0f };
 
 	// ステージ全体の広さ
 	int m_levelWidth{ 2000 };

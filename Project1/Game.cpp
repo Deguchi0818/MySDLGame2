@@ -35,6 +35,9 @@ bool Game::init(const string& title, int width, int height)
 		return false;
 	}
 
+	m_camera.w = static_cast<float>(m_width);
+	m_camera.h = static_cast<float>(m_height);
+
 	// playerの作成
 	m_player = make_unique <Player>(
 		m_renderer,
@@ -43,7 +46,7 @@ bool Game::init(const string& title, int width, int height)
 		"assets/player.png"
 	);
 
-	m_grounds.emplace_back(0, 550, 800, 50);
+	m_grounds.emplace_back(0, 550, m_levelWidth, 50);
 	m_grounds.emplace_back(0, 350, 50, 300);
 	m_grounds.emplace_back(300, 250, 50, 200);
 
@@ -95,6 +98,25 @@ void Game::processEvents()
 void Game::update(float dt) 
 {
 	m_player->update(dt, m_levelWidth, m_levelHeight);
+
+	// プレイヤーの中心座標を計算
+	SDL_FRect pRect = m_player->collider().rect();
+	float playerCenterX = pRect.x + pRect.w / 2.0f;
+	float playerCenterY = pRect.y + pRect.h / 2.0f;
+	// カメラをプレイヤーの中心に合わせる
+	m_camera.x = playerCenterX - m_camera.w / 2.0f;
+	m_camera.y = playerCenterY - m_camera.h / 2.0f;
+	// カメラの範囲制限
+	if (m_camera.x < 0)
+	{
+		m_camera.x = 0;
+	}
+	if (m_camera.y < 0)
+	{
+		m_camera.y = 0;
+	}
+	if (m_camera.x > m_levelWidth - m_camera.w) m_camera.x = m_levelWidth - m_camera.w;
+	if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
 
 	BoxCollider& pCol = m_player->collider();
 	SDL_FRect p = pCol.rect();
@@ -150,12 +172,9 @@ void Game::update(float dt)
 		p = pCol.rect();
 	}
 
-	// プレイヤーの中心座標を計算
-	//SDL_FRect pRect = m_player->collider().rect();
-	//float playerCenterX = pRect.x + pRect.w / 2.0f;
-	//float playerCenterY = pRect.y + pRect.h / 2.0f;
 
-	//pCol.rect();
+	
+
 }
 
 void Game::render()
@@ -164,12 +183,15 @@ void Game::render()
 	SDL_RenderClear(m_renderer);
 
 
-	m_player->render(m_renderer);
+	m_player->render(m_renderer, { m_camera.x, m_camera.y });
 
 	SDL_SetRenderDrawColor(m_renderer, 100, 50, 0, 255);
 	for (auto& g : m_grounds) 
 	{
 		SDL_FRect r = g.rect();
+		r.x -= m_camera.x;
+		r.y -= m_camera.y;
+
 
 		SDL_RenderFillRect(m_renderer, &r);
 	}
@@ -194,5 +216,6 @@ void Game::cleanup()
 	if (SDL_WasInit(SDL_INIT_VIDEO)) {
 		SDL_Quit();
 	}
+
 
 }

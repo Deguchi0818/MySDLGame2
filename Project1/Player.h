@@ -12,7 +12,7 @@ public:
 	~Player();
 
 	void update(float dt, int m_width, int m_height);
-	void render(SDL_Renderer* texturePath);
+	void render(SDL_Renderer* texturePath, const SDL_FPoint& cameraOffset);
 
 	BoxCollider& collider() { return m_collider; }
 	const BoxCollider& collider() const { return m_collider; }

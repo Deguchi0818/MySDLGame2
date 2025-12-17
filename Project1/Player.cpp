@@ -91,9 +91,12 @@ bool Player::isOnGround() const
 }
 
 
-void Player::render(SDL_Renderer* renderer) 
+void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 {
 	SDL_FRect dst = m_collider.rect();
+
+	dst.x -= cameraOffset.x;
+	dst.y -= cameraOffset.y;
 
 	if (!m_texture)
 	{
