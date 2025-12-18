@@ -52,6 +52,8 @@ bool Game::init(const string& title, int width, int height)
 
 	m_isRunning = true;
 
+	loadMap("map.txt");
+
 	return true;
 }
 
@@ -218,4 +220,54 @@ void Game::cleanup()
 	}
 
 
+}
+
+void Game::loadMap(const string& filename) 
+{
+	m_grounds.clear();
+
+	ifstream file(filename);
+	if (!file.is_open()) 
+	{
+		return;
+	}
+
+	string line;
+	int row = 0;
+
+
+	while (getline(file, line))
+	{
+		for (int col = 0; col < line.length(); ++col)
+		{
+			char tile = line[col];
+
+			float x = static_cast<float>(col * TILE_SIZE);
+			float y = static_cast<float>(row * TILE_SIZE);
+
+			if (tile == '#')
+			{
+				m_grounds.emplace_back(x, y, (float)TILE_SIZE, (float)TILE_SIZE);
+			}
+			else if (tile == 'P')
+			{
+				if (m_player)
+				{
+					m_player->resetPosition(x, y);
+				}
+			}
+		}
+
+		int lineWidth = line.length() * TILE_SIZE;
+		if (lineWidth > m_levelWidth)
+		{
+			m_levelWidth = lineWidth;
+		}
+
+		row++;
+	}
+
+	m_levelHeight = row * TILE_SIZE;
+
+	file.close();
 }

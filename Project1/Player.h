@@ -19,6 +19,7 @@ public:
 
 	void setOnGround(bool on);
 	bool isOnGround() const;
+	void resetPosition(float x, float y);
 
 	float velX = 0.0f;
 	float velY = 0.0f;
@@ -33,8 +34,15 @@ private:
 	float speed = 200.0f;
 	float gravity = 1500.0f;
 	float jumpPower = -500.0f;
+	float fallMultiplier = 1.2f;
+
+	// ƒzƒoƒŠƒ“ƒO
+	bool isHovering;
+	float hoverFlapSpeed = -350.0f;
+	float hoverGravity = 250.0f;
 
 	bool m_onGround = false;
+	bool prevJumpPressed;
 
 	SDL_Texture* m_texture = nullptr;
 };

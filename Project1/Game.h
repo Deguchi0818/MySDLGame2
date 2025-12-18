@@ -51,5 +51,9 @@ private:
 	// ステージ全体の広さ
 	int m_levelWidth{ 2000 };
 	int m_levelHeight{ 600 };
+
+	void loadMap(const string& filename);
+
+	const int TILE_SIZE = 50;
 };
 

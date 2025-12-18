@@ -34,9 +34,16 @@ void Player::update(float dt, int screenW, int screenH)
 	bool curD = keys[SDL_SCANCODE_D];
 
 	bool curJump = keys[SDL_SCANCODE_SPACE];
+	bool jumpPressed = (curJump && !prevJumpPressed);   // u‰Ÿ‚µ‚½uŠÔv
+	prevJumpPressed = curJump;
 
 	bool canJump = m_onGround;
 	velX *= 0.0f;
+
+	if (!curJump && isHovering)
+	{
+		isHovering = false;
+	}
 
 	if (curA) 
 	{
@@ -48,14 +55,32 @@ void Player::update(float dt, int screenW, int screenH)
 		velX += speed;
 	}
 
+	float currentGravity = gravity;
+	if (isHovering) 
+	{
+		currentGravity = hoverGravity;
+	}
+	else
+	{
+		if (velY > 0) 
+		{
+			currentGravity *= fallMultiplier;
+		}
+	}
 	if (curJump && canJump) 
 	{
 		velY = jumpPower;
+		isHovering = false;
 		setOnGround(false);
+	}
+	else if(jumpPressed)
+	{
+		isHovering = true;
+		velY = hoverFlapSpeed;
 	}
 
 	r.x += velX * dt;
-	velY += gravity * dt;
+	velY += currentGravity * dt;
 	r.y += velY *dt;
 
 	if (r.x < 0)
@@ -106,4 +131,13 @@ void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 	}
 
 	SDL_RenderTexture(renderer, m_texture, nullptr, &dst);
+}
+
+void Player::resetPosition(float x, float y) 
+{
+	m_collider.setPosition(x, y);
+
+	velY = 0;
+
+	m_prevRect = m_collider.rect();
 }
