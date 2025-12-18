@@ -24,81 +24,20 @@ Player::~Player()
 
 void Player::update(float dt, int screenW, int screenH) 
 {
-	SDL_FRect r = m_collider.rect();
-
+	// 前回の座標を保存
 	m_prevRect = m_collider.rect();
 
 	const bool* keys = SDL_GetKeyboardState(nullptr);
 
-	bool curA = keys[SDL_SCANCODE_A];
-	bool curD = keys[SDL_SCANCODE_D];
+	// タイマーの更新
+	updateTimers(dt);
 
-	bool curJump = keys[SDL_SCANCODE_SPACE];
-	bool jumpPressed = (curJump && !prevJumpPressed);   // 「押した瞬間」
-	prevJumpPressed = curJump;
+	horizontalMove(keys, dt);	// 横方向の動き
+	jump(keys, dt);				// ジャンプ
+	applyPhysics(dt);			// 動きの更新
 
-	bool canJump = m_onGround;
-	velX *= 0.0f;
+	checkScreenBounds(screenW, screenH);
 
-	if (!curJump && isHovering)
-	{
-		isHovering = false;
-	}
-
-	if (curA) 
-	{
-		velX -= speed;
-	}
-
-	if (curD) 
-	{
-		velX += speed;
-	}
-
-	float currentGravity = gravity;
-	if (isHovering) 
-	{
-		currentGravity = hoverGravity;
-	}
-	else
-	{
-		if (velY > 0) 
-		{
-			currentGravity *= fallMultiplier;
-		}
-	}
-	if (curJump && canJump) 
-	{
-		velY = jumpPower;
-		isHovering = false;
-		setOnGround(false);
-	}
-	else if(jumpPressed)
-	{
-		isHovering = true;
-		velY = hoverFlapSpeed;
-	}
-
-	r.x += velX * dt;
-	velY += currentGravity * dt;
-	r.y += velY *dt;
-
-	if (r.x < 0)
-	{
-		r.x = 0;
-	}
-	if (r.x + r.w > screenW)
-	{
-		r.x = screenW - r.w;
-	}
-
-	if (r.y + r.h > screenH)
-	{
-		r.y = screenH - r.h;
-		velY = 0.0f;
-	}
-
-	m_collider.setPosition(r.x, r.y);
 }
 
 void Player::setOnGround(bool on) 
@@ -106,6 +45,7 @@ void Player::setOnGround(bool on)
 	if (on) 
 	{
 		velY = 0.0f;
+		coyoteTimer = coyoteTimeMax;
 	}
 	m_onGround = on;
 }
@@ -131,6 +71,129 @@ void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 	}
 
 	SDL_RenderTexture(renderer, m_texture, nullptr, &dst);
+}
+
+void Player::horizontalMove(const bool* keys, float dt)
+{
+	bool curA = keys[SDL_SCANCODE_A];
+	bool curD = keys[SDL_SCANCODE_D];
+
+	velX *= 0.0f;
+
+	if (curA)
+	{
+		velX -= speed;
+	}
+
+	if (curD)
+	{
+		velX += speed;
+	}
+
+}
+
+void Player::jump(const bool* keys, float dt) 
+{
+	bool curJump = keys[SDL_SCANCODE_SPACE];
+	bool jumpPressed = (curJump && !prevJumpPressed);   // 「押した瞬間」
+	prevJumpPressed = curJump;
+
+	bool canJump = m_onGround || (coyoteTimer > 0);
+	if (jumpPressed)
+	{
+		jumpBufferTimer = jumpBufferMax;
+	}
+
+
+	if (!curJump && isHovering)
+	{
+		isHovering = false;
+	}
+
+
+
+	float currentGravity = gravity;
+	if (isHovering)
+	{
+		currentGravity = hoverGravity;
+	}
+	else
+	{
+		if (velY > 0)
+		{
+			currentGravity *= fallMultiplier;
+		}
+	}
+
+	if (jumpBufferTimer > 0)
+	{
+		if (curJump && canJump)
+		{
+			velY = jumpPower;
+			isHovering = false;
+			coyoteTimer = 0.0f;
+			jumpBufferTimer = 0.0f;
+			setOnGround(false);
+		}
+		else if (jumpPressed)
+		{
+			isHovering = true;
+			coyoteTimer = 0.0f;
+			jumpBufferTimer = 0.0f;
+			velY = hoverFlapSpeed;
+		}
+	}
+
+	velY += currentGravity * dt;
+
+	if (isHovering && velY > hoverFallMaxSpeed)
+	{
+		velY = hoverFallMaxSpeed;
+	}
+
+}
+
+void Player::applyPhysics(float dt) 
+{
+	SDL_FRect r = m_collider.rect();
+
+	r.x += velX * dt;
+	r.y += velY * dt;
+
+	m_collider.setPosition(r.x, r.y);
+}
+
+void Player::updateTimers(float dt)
+{
+	if (coyoteTimer > 0)
+	{
+		coyoteTimer -= dt;
+	}
+	if (jumpBufferTimer > 0)
+	{
+		jumpBufferTimer -= dt;
+	}
+}
+
+void Player::checkScreenBounds(float screenW, float screenH) 
+{
+	SDL_FRect r = m_collider.rect();
+	if (r.x < 0)
+	{
+		r.x = 0;
+	}
+	if (r.x + r.w > screenW)
+	{
+		r.x = screenW - r.w;
+	}
+
+	if (r.y + r.h > screenH)
+	{
+		r.y = screenH - r.h;
+		velY = 0.0f;
+	}
+
+	m_collider.setPosition(r.x, r.y);
 }
 
 void Player::resetPosition(float x, float y) 

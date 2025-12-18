@@ -31,6 +31,12 @@ private:
 
 	SDL_FRect m_prevRect;
 
+	void horizontalMove(const bool* kyes, float dt);
+	void jump(const bool* kyes, float dt);
+	void applyPhysics(float dt);
+	void updateTimers(float dt);
+	void checkScreenBounds(float screenW, float screenH);
+
 	float speed = 200.0f;
 	float gravity = 1500.0f;
 	float jumpPower = -500.0f;
@@ -40,6 +46,14 @@ private:
 	bool isHovering;
 	float hoverFlapSpeed = -350.0f;
 	float hoverGravity = 250.0f;
+	float hoverFallMaxSpeed = 150.0f;
+
+	// コヨーテタイム
+	float coyoteTimeMax = 0.12f;
+	float coyoteTimer = 0.0f;
+
+	float jumpBufferMax = 0.12f;
+	float jumpBufferTimer = 0.0f;
 
 	bool m_onGround = false;
 	bool prevJumpPressed;
