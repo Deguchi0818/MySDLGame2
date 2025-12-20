@@ -5,6 +5,7 @@
 #include<string>
 #include<vector>
 #include<fstream>
+#include <cstdlib>
 
 #include "Player.h"
 #include "Collider.h"
@@ -53,6 +54,7 @@ private:
 	int m_levelHeight{ 600 };
 
 	void loadMap(const string& filename);
+	void loadConfig(const string& filename);
 
 	const int TILE_SIZE = 50;
 };

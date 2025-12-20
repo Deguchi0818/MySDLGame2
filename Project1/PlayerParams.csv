@@ -1,0 +1,13 @@
+﻿パラメータ名,値
+speed,200
+gravity,1500
+jumpPower,-500
+fallMultiplier,1.2
+ ホバリング,
+hoverFlapSpeed,-350
+hoverGravity,250
+hoverFallMaxSpeed,150
+コヨーテタイム,
+coyoteTimeMax,0.12
+,
+jumpBufferMax,0.12

@@ -45,7 +45,7 @@ void Player::setOnGround(bool on)
 	if (on) 
 	{
 		velY = 0.0f;
-		coyoteTimer = coyoteTimeMax;
+		coyoteTimer = m_params.coyoteTimeMax;
 	}
 	m_onGround = on;
 }
@@ -82,12 +82,12 @@ void Player::horizontalMove(const bool* keys, float dt)
 
 	if (curA)
 	{
-		velX -= speed;
+		velX -= m_params.speed;
 	}
 
 	if (curD)
 	{
-		velX += speed;
+		velX += m_params.speed;
 	}
 
 }
@@ -101,7 +101,7 @@ void Player::jump(const bool* keys, float dt)
 	bool canJump = m_onGround || (coyoteTimer > 0);
 	if (jumpPressed)
 	{
-		jumpBufferTimer = jumpBufferMax;
+		jumpBufferTimer = m_params.jumpBufferMax;
 	}
 
 
@@ -112,16 +112,16 @@ void Player::jump(const bool* keys, float dt)
 
 
 
-	float currentGravity = gravity;
+	float currentGravity = m_params.gravity;
 	if (isHovering)
 	{
-		currentGravity = hoverGravity;
+		currentGravity = m_params.hoverGravity;
 	}
 	else
 	{
 		if (velY > 0)
 		{
-			currentGravity *= fallMultiplier;
+			currentGravity *= m_params.fallMultiplier;
 		}
 	}
 
@@ -129,7 +129,7 @@ void Player::jump(const bool* keys, float dt)
 	{
 		if (curJump && canJump)
 		{
-			velY = jumpPower;
+			velY = m_params.jumpPower;
 			isHovering = false;
 			coyoteTimer = 0.0f;
 			jumpBufferTimer = 0.0f;
@@ -140,15 +140,15 @@ void Player::jump(const bool* keys, float dt)
 			isHovering = true;
 			coyoteTimer = 0.0f;
 			jumpBufferTimer = 0.0f;
-			velY = hoverFlapSpeed;
+			velY = m_params.hoverFlapSpeed;
 		}
 	}
 
 	velY += currentGravity * dt;
 
-	if (isHovering && velY > hoverFallMaxSpeed)
+	if (isHovering && velY > m_params.hoverFallMaxSpeed)
 	{
-		velY = hoverFallMaxSpeed;
+		velY = m_params.hoverFallMaxSpeed;
 	}
 
 }

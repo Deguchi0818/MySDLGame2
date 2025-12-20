@@ -52,6 +52,7 @@ bool Game::init(const string& title, int width, int height)
 
 	m_isRunning = true;
 
+	loadConfig("PlayerParams.csv");
 	loadMap("map.txt");
 
 	return true;
@@ -93,6 +94,9 @@ void Game::processEvents()
 			if (event.key.key == SDLK_ESCAPE) {
 				m_isRunning = false;
 			}
+
+			else if(event.key.key == SDLK_R)
+				loadConfig("PlayerParams.csv");
 		}
 	}
 }
@@ -173,10 +177,6 @@ void Game::update(float dt)
 		}
 		p = pCol.rect();
 	}
-
-
-	
-
 }
 
 void Game::render()
@@ -270,4 +270,45 @@ void Game::loadMap(const string& filename)
 	m_levelHeight = row * TILE_SIZE;
 
 	file.close();
+}
+
+void Game::loadConfig(const string& filename) 
+{
+	PlayerParams params;
+
+	ifstream file(filename);
+	string line;
+
+	while (getline(file, line))
+	{
+		size_t commaPos = line.find(',');
+		if (commaPos == string::npos) continue;
+
+		string name = line.substr(0, commaPos);
+		string valueStr = line.substr(commaPos + 1);
+
+		try
+		{
+			float value = stof(valueStr);
+
+			if (name == "speed") params.speed = value;
+			else if (name == "gravity") params.gravity = value;
+			else if (name == "jumpPower") params.jumpPower = value;
+			else if (name == "fallMultiplier") params.fallMultiplier = value;
+			else if (name == "hoverFlapSpeed") params.hoverFlapSpeed = value;
+			else if (name == "hoverGravity") params.hoverGravity = value;
+			else if (name == "hoverFallMaxSpeed") params.hoverFallMaxSpeed = value;
+			else if (name == "coyoteTimeMax") params.coyoteTimeMax = value;
+			else if (name == "jumpBufferMax") params.jumpBufferMax = value;
+		}
+		catch (...) {
+			// 数字に変換できない行（ヘッダーや空行）は無視する
+			continue;
+		}
+	}
+
+	if (m_player)
+	{
+		m_player->applyParams(params);
+	}
 }
