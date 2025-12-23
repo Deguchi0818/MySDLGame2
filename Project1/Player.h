@@ -23,7 +23,7 @@ struct PlayerParams
 class Player
 {
 public:
-	Player(SDL_Renderer* rendere,
+	Player(SDL_Renderer* renderer,
 		float x, float y, float w, float h,
 		const char* texturtPath);
 
@@ -41,6 +41,10 @@ public:
 	bool isOnGround() const;
 	void resetPosition(float x, float y);
 
+	bool wantsToShoot() const { return m_wantsToShoot; }
+	void consumeShootFlag() { m_wantsToShoot = false; } // フラグを消費（リセット）
+	float getFacingDir() const { return m_facingDir; }  // 向きを教える
+
 	float velX = 0.0f;
 	float velY = 0.0f;
 
@@ -56,6 +60,7 @@ private:
 	void applyPhysics(float dt);
 	void updateTimers(float dt);
 	void checkScreenBounds(float screenW, float screenH);
+	void attack(const bool* kyes, float dt);
 
 	PlayerParams m_params;
 
@@ -65,6 +70,11 @@ private:
 	bool isHovering;
 	bool m_onGround = false;
 	bool prevJumpPressed;
+
+	float m_fireCooldown = 0.7f; // 発射間隔（秒）
+	float m_fireTimer = 0.0f;    // 残り待ち時間
+	bool m_wantsToShoot = false; // 弾を撃ちたいフラグ
+	float m_facingDir = 1.0f;
 
 	SDL_Texture* m_texture = nullptr;
 };

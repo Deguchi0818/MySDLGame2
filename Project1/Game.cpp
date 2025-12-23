@@ -48,6 +48,8 @@ bool Game::init(const string& title, int width, int height)
 
 	m_isRunning = true;
 
+	m_bulletTexture = IMG_LoadTexture(m_renderer, "assets/bullet.png");
+
 	loadConfig("PlayerParams.csv");
 	loadMap("map.txt");
 
@@ -128,6 +130,24 @@ void Game::update(float dt)
 	if (m_camera.x > m_levelWidth - m_camera.w) m_camera.x = m_levelWidth - m_camera.w;
 	if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
 
+	if (m_player->wantsToShoot()) 
+	{
+		m_bullets.push_back(make_unique<Bullet>(
+			m_renderer,
+			m_player->collider().rect().x, m_player->collider().rect().y, 16, 16,
+			m_bulletTexture, m_player->getFacingDir()
+		));
+
+		m_player->consumeShootFlag();
+	}
+
+	for (auto& bullet : m_bullets) {
+		bullet->update(dt, m_grounds);
+	}
+
+	erase_if(m_bullets, [](const std::unique_ptr<Bullet>& b) {
+		return !b->isActive();
+		});
 }
 
 void Game::render()
@@ -138,9 +158,13 @@ void Game::render()
 
 	m_player->render(m_renderer, { m_camera.x, m_camera.y });
 
+	for (auto& bullet : m_bullets) {
+		bullet->render(m_renderer, { m_camera.x, m_camera.y });
+	}
 	for (auto& enemy : m_enemies) {
 		enemy->render(m_renderer, { m_camera.x, m_camera.y });
 	}
+
 
 	SDL_SetRenderDrawColor(m_renderer, 100, 50, 0, 255);
 	for (auto& g : m_grounds) 

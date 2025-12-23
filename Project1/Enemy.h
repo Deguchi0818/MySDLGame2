@@ -38,5 +38,6 @@ protected:
 	float m_velX = 0;
 	float m_velY = 0;
 	float gravity = 1500.0f;
+	float speed = -100;
 };
 

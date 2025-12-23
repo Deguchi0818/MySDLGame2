@@ -11,6 +11,7 @@
 #include "Enemy.h"
 #include "WalkingEnemy.h"
 #include "Collider.h"
+#include "Bullet.h"
 
 using namespace std;
 
@@ -44,6 +45,7 @@ private:
 
 	unique_ptr<Player> m_player;
 	vector < unique_ptr<Enemy>> m_enemies;
+	vector<std::unique_ptr<Bullet>> m_bullets;
 
 	vector<BoxCollider> m_grounds;
 
@@ -58,6 +60,9 @@ private:
 
 	void loadMap(const string& filename);
 	void loadConfig(const string& filename);
+
+
+	SDL_Texture* m_bulletTexture = nullptr;
 
 	const int TILE_SIZE = 50;
 };

@@ -35,6 +35,7 @@ void Player::update(float dt, int screenW, int screenH)
 	horizontalMove(keys, dt);	// 横方向の動き
 	jump(keys, dt);				// ジャンプ
 	applyPhysics(dt);			// 動きの更新
+	attack(keys, dt);
 
 	checkScreenBounds(screenW, screenH);
 
@@ -83,11 +84,13 @@ void Player::horizontalMove(const bool* keys, float dt)
 	if (curA)
 	{
 		velX -= m_params.speed;
+		m_facingDir = -1.0f;
 	}
 
 	if (curD)
 	{
 		velX += m_params.speed;
+		m_facingDir = 1.0f;
 	}
 
 }
@@ -173,6 +176,10 @@ void Player::updateTimers(float dt)
 	{
 		jumpBufferTimer -= dt;
 	}
+	if (m_fireTimer > 0) 
+	{
+		m_fireTimer -= dt;
+	}
 }
 
 void Player::checkScreenBounds(float screenW, float screenH) 
@@ -203,4 +210,15 @@ void Player::resetPosition(float x, float y)
 	velY = 0;
 
 	m_prevRect = m_collider.rect();
+}
+
+void Player::attack(const bool* keys, float dt) 
+{
+	bool curAttack = keys[SDL_SCANCODE_LSHIFT];
+
+	if (keys[SDL_SCANCODE_LSHIFT] && m_fireTimer <= 0)
+	{
+		m_wantsToShoot = true;
+		m_fireTimer = m_fireCooldown;
+	}
 }
