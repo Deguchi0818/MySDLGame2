@@ -46,10 +46,6 @@ bool Game::init(const string& title, int width, int height)
 		"assets/player.png"
 	);
 
-	m_grounds.emplace_back(0, 550, m_levelWidth, 50);
-	m_grounds.emplace_back(0, 350, 50, 300);
-	m_grounds.emplace_back(300, 250, 50, 200);
-
 	m_isRunning = true;
 
 	loadConfig("PlayerParams.csv");
@@ -107,6 +103,14 @@ void Game::update(float dt)
 
 	// プレイヤーの中心座標を計算
 	SDL_FRect pRect = m_player->collider().rect();
+
+	bool onGround = BoxCollider::resolveCollision(m_player->collider(), m_player->velX, m_player->velY, m_grounds);
+	m_player->setOnGround(onGround);
+
+	for (auto& enemy : m_enemies) {
+		enemy->update(dt, m_player->collider().rect(), m_grounds);
+	}
+
 	float playerCenterX = pRect.x + pRect.w / 2.0f;
 	float playerCenterY = pRect.y + pRect.h / 2.0f;
 	// カメラをプレイヤーの中心に合わせる
@@ -124,59 +128,6 @@ void Game::update(float dt)
 	if (m_camera.x > m_levelWidth - m_camera.w) m_camera.x = m_levelWidth - m_camera.w;
 	if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
 
-	BoxCollider& pCol = m_player->collider();
-	SDL_FRect p = pCol.rect();
-
-	for (auto& ground : m_grounds) 
-	{
-		if (!pCol.intersect(ground)) 
-		{
-			continue;
-		}
-
-		const SDL_FRect& g = ground.rect();
-		float overlapLeft = (p.x + p.w) - g.x;		// プレイヤー右側が地面の左側を越えた量
-		float overlapRight = (g.x + g.w) - p.x;		// 地面の右側がプレイヤー左側を越えた量
-		float penX = (overlapLeft < overlapRight) ? overlapLeft : overlapRight;
-
-		float overlapTop = (p.y + p.h) - g.y;		// プレイヤー下側が地面の上側を越えた量
-		float overlapBottom = (g.y + g.h) - p.y;	// 地面の下側がプレイヤー上側を越えた量
-		float penY = (overlapTop < overlapBottom) ? overlapTop : overlapBottom;
-
-		if (penX < penY)
-		{
-			// X軸方向の貫通が小さい -> X軸方向に修正
-			if (overlapLeft < overlapRight)
-			{
-				// 左側から衝突
-				pCol.setPosition(g.x - p.w, p.y);
-			}
-			else
-			{
-				// 右側から衝突
-				pCol.setPosition(g.x + g.w, p.y);
-			}
-			m_player->velX = 0.0f;
-		}
-		else
-		{
-			// Y軸方向の貫通が小さい -> Y軸方向に修正
-			if (overlapTop < overlapBottom)
-			{
-				// 上側から衝突
-				pCol.setPosition(p.x, g.y - p.h);
-				m_player->velY = 0.0f;
-				m_player->setOnGround(true);
-			}
-			else
-			{
-				// 下側から衝突
-				pCol.setPosition(p.x, g.y + g.h);
-				m_player->velY = 0.0f;
-			}
-		}
-		p = pCol.rect();
-	}
 }
 
 void Game::render()
@@ -186,6 +137,10 @@ void Game::render()
 
 
 	m_player->render(m_renderer, { m_camera.x, m_camera.y });
+
+	for (auto& enemy : m_enemies) {
+		enemy->render(m_renderer, { m_camera.x, m_camera.y });
+	}
 
 	SDL_SetRenderDrawColor(m_renderer, 100, 50, 0, 255);
 	for (auto& g : m_grounds) 
@@ -197,6 +152,7 @@ void Game::render()
 
 		SDL_RenderFillRect(m_renderer, &r);
 	}
+
 
 
 	// 画面に反映
@@ -255,6 +211,9 @@ void Game::loadMap(const string& filename)
 				{
 					m_player->resetPosition(x, y);
 				}
+			}
+			else if (tile == 'E') {
+				m_enemies.push_back(std::make_unique<WalkingEnemy>(x, y, 64.0f, 64.0f));
 			}
 		}
 

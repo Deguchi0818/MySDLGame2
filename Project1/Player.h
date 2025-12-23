@@ -30,7 +30,7 @@ public:
 	~Player();
 
 	void update(float dt, int m_width, int m_height);
-	void render(SDL_Renderer* texturePath, const SDL_FPoint& cameraOffset);
+	void render(SDL_Renderer* rendere, const SDL_FPoint& cameraOffset);
 
 	void applyParams(const PlayerParams& p) { m_params = p; }
 

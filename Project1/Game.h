@@ -8,6 +8,8 @@
 #include <cstdlib>
 
 #include "Player.h"
+#include "Enemy.h"
+#include "WalkingEnemy.h"
 #include "Collider.h"
 
 using namespace std;
@@ -41,6 +43,7 @@ private:
 	SDL_Renderer* m_renderer{ nullptr };
 
 	unique_ptr<Player> m_player;
+	vector < unique_ptr<Enemy>> m_enemies;
 
 	vector<BoxCollider> m_grounds;
 
