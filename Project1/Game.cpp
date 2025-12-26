@@ -110,7 +110,7 @@ void Game::update(float dt)
 	m_player->setOnGround(onGround);
 
 	for (auto& enemy : m_enemies) {
-		enemy->update(dt, m_player->collider().rect(), m_grounds);
+		enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
 	}
 
 	float playerCenterX = pRect.x + pRect.w / 2.0f;
@@ -237,7 +237,10 @@ void Game::loadMap(const string& filename)
 				}
 			}
 			else if (tile == 'E') {
-				m_enemies.push_back(std::make_unique<WalkingEnemy>(x, y, 64.0f, 64.0f));
+				m_enemies.push_back(make_unique<EnemyWalking>(x, y, 64.0f, 64.0f));
+			}
+			else if (tile == 'C') {
+				m_enemies.push_back(make_unique<EnemyChase>(x, y, 64.0f, 64.0f));
 			}
 		}
 

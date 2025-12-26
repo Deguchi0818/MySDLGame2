@@ -1,5 +1,6 @@
 #pragma once
 #include "Collider.h"
+#include "Player.h"
 #include <SDL3/SDL.h>
 #include<iostream>
 #include<vector>
@@ -10,10 +11,13 @@ class Enemy
 {
 public:
 	Enemy(float x, float y, float w, float h)
-		: m_collider(x, y, w, h), m_isDead(false) {}
+		: m_collider(x, y, w, h), m_isDead(false) 
+	{
+		speed = 100;
+	}
 
 	virtual ~Enemy() = default;
-	virtual void update(float dt, const SDL_FRect& playerRect, const vector<BoxCollider>& grounds) = 0;
+	virtual void update(float dt, const SDL_FRect& playerRect, const Player& player, const vector<BoxCollider>& grounds) = 0;
 
 	virtual void render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset) 
 	{
@@ -38,6 +42,6 @@ protected:
 	float m_velX = 0;
 	float m_velY = 0;
 	float gravity = 1500.0f;
-	float speed = -100;
+	float speed = 100;
 };
 

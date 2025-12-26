@@ -9,7 +9,8 @@
 
 #include "Player.h"
 #include "Enemy.h"
-#include "WalkingEnemy.h"
+#include "EnemyWalking.h"
+#include "EnemyChase.h"
 #include "Collider.h"
 #include "Bullet.h"
 
