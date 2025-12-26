@@ -13,8 +13,8 @@ public:
 	EnemyChase(float x, float y, float w, float h)
 		: Enemy(x, y, w, h)
 	{
-		speed = 100.0f;       
-		m_detectRange = 400.0f; 
+		speed = 100.0f;       // スピード
+		m_detectRange = 400.0f;// 追いかける範囲 
 	}
 
 	void update(float dt, const SDL_FRect& playerRect, const Player& player, const vector<BoxCollider>& grounds)override;
