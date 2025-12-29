@@ -222,3 +222,10 @@ void Player::attack(const bool* keys, float dt)
 		m_fireTimer = m_fireCooldown;
 	}
 }
+
+void Player::applyKnockback(float forceX,  float forceY)
+{
+	velX = forceX;
+	velY = forceY;
+	setOnGround(false);
+}

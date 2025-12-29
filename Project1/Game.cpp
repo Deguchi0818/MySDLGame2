@@ -111,6 +111,23 @@ void Game::update(float dt)
 
 	for (auto& enemy : m_enemies) {
 		enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
+
+		
+
+		if (!enemy->isDead()) 
+		{
+			if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
+			{
+				float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// player‚Ì‚˜²‚Ì’†S‚ğ‹‚ß‚é
+				float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemy‚Ì‚˜²‚Ì’†S‚ğ‹‚ß‚é
+
+				// “G‚©‚ç‚İ‚Äplayer‚ª‚Ç‚¿‚ç‚ÉŒü‚¢‚Ä‚¢‚é‚©‚Ì”»’è
+				float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
+
+				m_player->applyKnockback(direction * 500.0f, -400.0f);
+				enemy->applyKnockback(direction * -500.0f, -400.0f);
+			}
+		}
 	}
 
 	float playerCenterX = pRect.x + pRect.w / 2.0f;

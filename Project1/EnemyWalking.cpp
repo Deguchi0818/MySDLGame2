@@ -4,18 +4,38 @@ void EnemyWalking::update(float dt, const SDL_FRect& playerRect, const Player& p
 {
     m_velY += 1500.0f * dt; // Playerと同じくらいの重力
 
-    // 2. とりあえず左に歩く
-    if (m_velX == 0) m_velX = -100.0f;
+    if (m_stunTimer > 0)
+    {
+        m_stunTimer -= dt;
+        if (m_onGround) {
+            m_velX = 0.0f; // 地面にいる時だけ足を止める
+        }
+    }
+    else 
+    {
+        if (abs(m_velX) > speed)
+        {
+            m_velX = (m_velX > 0) ? speed : -speed;
+        }
+
+        if (abs(m_velX) != speed)
+        {
+            if(m_velX == 0) m_velX = -speed;
+        }
+    }
 
     float beforeVelX = m_velX;  // 判定前の速度を保存（後で比較するため）
-    // 3. 移動を適用
+
     SDL_FRect r = m_collider.rect();
     r.x += m_velX * dt;
     r.y += m_velY * dt;
     m_collider.setPosition(r.x, r.y);
 
-    // 4. 【重要】共通化した衝突判定を呼び出す
-    BoxCollider::resolveCollision(m_collider, m_velX, m_velY, grounds); // m_velXが０になる
+    bool onGround = BoxCollider::resolveCollision(m_collider, m_velX, m_velY, grounds);
+    setOnGround(onGround);
 
-    if (m_velX == 0) m_velX = -beforeVelX;
+    //if (m_velX == 0) m_velX = -beforeVelX;
+    if (m_stunTimer <= 0 && m_velX == 0 && beforeVelX != 0) {
+        m_velX = (beforeVelX > 0) ? -speed : speed;
+    }
 }

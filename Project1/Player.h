@@ -44,6 +44,7 @@ public:
 	bool wantsToShoot() const { return m_wantsToShoot; }
 	void consumeShootFlag() { m_wantsToShoot = false; } // フラグを消費（リセット）
 	float getFacingDir() const { return m_facingDir; }  // 向きを教える
+	void applyKnockback(float forceX, float forceY);
 
 	float velX = 0.0f;
 	float velY = 0.0f;
@@ -61,6 +62,7 @@ private:
 	void updateTimers(float dt);
 	void checkScreenBounds(float screenW, float screenH);
 	void attack(const bool* kyes, float dt);
+	
 
 	PlayerParams m_params;
 
