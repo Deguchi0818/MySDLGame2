@@ -99,7 +99,7 @@ void Game::processEvents()
 	}
 }
 
-void Game::update(float dt) 
+void Game::update(float dt)
 {
 	m_player->update(dt, m_levelWidth, m_levelHeight);
 
@@ -131,7 +131,7 @@ void Game::update(float dt)
 	if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
 
 	// ’e‚Ì”­ŽË
-	if (m_player->wantsToShoot()) 
+	if (m_player->wantsToShoot())
 	{
 		m_bullets.push_back(make_unique<Bullet>(
 			m_renderer,
@@ -145,10 +145,29 @@ void Game::update(float dt)
 
 	for (auto& bullet : m_bullets) {
 		bullet->update(dt, m_grounds);
+		// Á‚¦‚Ä‚¢‚é’e‚Í–³Ž‹
+		if (!bullet->isActive()) continue;
+
+		for (auto& enemy : m_enemies)
+		{
+			// Šù‚ÉÁ‚¦‚Ä‚¢‚¢‚é“G‚ð–³Ž‹
+			if (enemy->isDead()) continue;
+
+			if (bullet->collider().intersect(enemy->collider()))
+			{
+				bullet->deleteBullet();
+				enemy->die();
+				break;
+			}
+		}
 	}
 
 	erase_if(m_bullets, [](const std::unique_ptr<Bullet>& b) {
 		return !b->isActive();
+		});
+
+	erase_if(m_enemies, [](const std::unique_ptr<Enemy>& e) {
+		return e->isDead();
 		});
 }
 
