@@ -35,12 +35,16 @@ public:
 	bool isDead() const { return m_isDead; }
 	void die() { m_isDead = true; }
 	const BoxCollider& collider() const { return m_collider; }
+	void handleStunState(float dt);
+	virtual void updatePhysics(float dt, const vector<BoxCollider>& grounds);
+	
 	virtual void applyKnockback(float forceX, float forceY) {
 		m_velX = forceX;
 		m_velY = forceY;
 		setOnGround(false);
 		m_stunTimer = 1.0f;
 	}
+
 	void setOnGround(bool on) {
 		if (on)
 		{

@@ -50,7 +50,7 @@ void EnemyChase::chase(float dt, float dx)
 		m_velX = -1.0f;
 	}
 
-	float chaseSpeed = speed * 1.5f;
+	float chaseSpeed = speed * 0.5f;
 
 	m_velX *= chaseSpeed;
 	
