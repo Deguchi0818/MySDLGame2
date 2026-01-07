@@ -175,8 +175,8 @@ void Game::update(float dt)
 
 			if (bullet->collider().intersect(enemy->collider()))
 			{
+				enemy->takeDamage();
 				bullet->deleteBullet();
-				enemy->die();
 				break;
 			}
 		}

@@ -58,14 +58,26 @@ public:
 	}
 	bool isStunned() const { return m_stunTimer > 0; }
 
+	virtual void takeDamage() 
+	{
+		if (m_isDead) return;
+
+		--m_hp;
+		if (m_hp <= 0) 
+		{
+			die();
+		}
+	}
+
 protected:
 	BoxCollider m_collider;
-	bool m_isDead;
+	bool m_isDead = false;
 	float m_velX = 0;
 	float m_velY = 0;
 	float gravity = 1500.0f;
 	float speed = 100;
 	float m_stunTimer = 0.0f;
+	int m_hp = 3;
 	bool m_onGround = false;
 
 };
