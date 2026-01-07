@@ -8,7 +8,7 @@ class Bullet
 public:
 	Bullet(SDL_Renderer* renderer,
 		float x, float y, float w, float h,
-		SDL_Texture* texture, float vx);
+		SDL_Texture* texture, float vx, float vy);
 
 	~Bullet();
 
@@ -34,6 +34,7 @@ private:
 	BoxCollider m_collider;
 	bool m_isActive;
 	float m_vx;
+	float m_vy;
 	float velX = 0.0f;
 	float velY = 0.0f;
 	float bulletSpeed = 400.0f;

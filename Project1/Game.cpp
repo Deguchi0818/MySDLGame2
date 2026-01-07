@@ -150,11 +150,14 @@ void Game::update(float dt)
 	// 弾の発射
 	if (m_player->wantsToShoot())
 	{
+		AimDir dir = m_player->getAimDir();
+
 		m_bullets.push_back(make_unique<Bullet>(
 			m_renderer,
-			m_player->collider().rect().x, m_player->collider().rect().y, 16, 16,
+			m_player->collider().rect().x, m_player->collider().rect().y, 16, 16, 
 			// 弾を撃つたびに IMG_LoadTextureを読んでいたが起動時にポインタで場所を指定することで一回の読み込みでよくなりかくつきが解消された
-			m_bulletTexture, m_player->getFacingDir()
+			m_bulletTexture,
+			dir.vx, dir.vy
 		));
 
 		m_player->consumeShootFlag();

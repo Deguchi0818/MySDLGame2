@@ -220,6 +220,39 @@ void Player::attack(const bool* keys, float dt)
 	{
 		m_wantsToShoot = true;
 		m_fireTimer = m_fireCooldown;
+
+		float vx = m_facingDir; // Šî–{‚ÍŒü‚¢‚Ä‚¢‚é•ûŒü
+		float vy = 0.0f;
+
+		if (keys[SDL_SCANCODE_W]) 
+		{
+			vy = -1.0f;
+			if (!keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT]) {
+				vx = 0.0f;
+			}
+		}
+
+		else if (keys[SDL_SCANCODE_S] && !isOnGround()) 
+		{
+			vy = 1.0f;
+			if (!keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT]) {
+				vx = 0.0f;
+			}
+		}
+
+		else if (keys[SDL_SCANCODE_Q]) 
+		{
+			vy = -1.0f;
+			vx;
+		}
+
+		else if (keys[SDL_SCANCODE_E])
+		{
+			vy = 1.0f;
+			vx;
+		}
+
+		m_currentAim = { vx, vy };
 	}
 }
 

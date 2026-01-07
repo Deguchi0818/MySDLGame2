@@ -20,6 +20,11 @@ struct PlayerParams
 	float jumpBufferMax = 0.12f;
 };
 
+struct AimDir {
+	float vx;
+	float vy;
+};
+
 class Player
 {
 public:
@@ -44,6 +49,7 @@ public:
 	bool wantsToShoot() const { return m_wantsToShoot; }
 	void consumeShootFlag() { m_wantsToShoot = false; } // フラグを消費（リセット）
 	float getFacingDir() const { return m_facingDir; }  // 向きを教える
+	AimDir getAimDir() const { return m_currentAim; }
 	void applyKnockback(float forceX, float forceY);
 
 	float velX = 0.0f;
@@ -77,6 +83,8 @@ private:
 	float m_fireTimer = 0.0f;    // 残り待ち時間
 	bool m_wantsToShoot = false; // 弾を撃ちたいフラグ
 	float m_facingDir = 1.0f;
+
+	AimDir m_currentAim = { 1.0f, 0.0f };
 
 	SDL_Texture* m_texture = nullptr;
 };
