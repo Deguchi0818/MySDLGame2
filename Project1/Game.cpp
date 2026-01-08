@@ -147,6 +147,12 @@ void Game::update(float dt)
 	if (m_camera.x > m_levelWidth - m_camera.w) m_camera.x = m_levelWidth - m_camera.w;
 	if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
 
+	float bulletW = 16.0f;
+	float bulletH = 16.0f;
+
+	float spawnX = (m_player->m_facingDir > 0) ? (pRect.x + pRect.w) : (pRect.x - bulletW);
+	float spawnY = playerCenterY - (bulletH / 2.0f);
+
 	// 弾の発射
 	if (m_player->wantsToShoot())
 	{
@@ -154,7 +160,7 @@ void Game::update(float dt)
 
 		m_bullets.push_back(make_unique<Bullet>(
 			m_renderer,
-			m_player->collider().rect().x, m_player->collider().rect().y, 16, 16, 
+			spawnX, spawnY, bulletW, bulletH,
 			// 弾を撃つたびに IMG_LoadTextureを読んでいたが起動時にポインタで場所を指定することで一回の読み込みでよくなりかくつきが解消された
 			m_bulletTexture,
 			dir.vx, dir.vy

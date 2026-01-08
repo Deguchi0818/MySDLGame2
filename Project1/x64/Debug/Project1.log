@@ -1,14 +1,4 @@
-﻿  Game.cpp
-C:\Users\PC_User\Documents\MySDLGame2\Project1\Game.cpp(289,17): warning C4267: '初期化中': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244: '引数': '_Ty' から 'float' への変換です。データが失われる可能性があります。
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244:             _Ty=int
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244:         ]
-  (ソース ファイル 'Game.cpp' をコンパイルしています)
-  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56):
-  テンプレートインスタンス化コンテキスト (最初に最も古いもの) は
-  	C:\Users\PC_User\Documents\MySDLGame2\Project1\Game.cpp(155,23):
-  	コンパイル対象の関数 テンプレート インスタンス化 'std::unique_ptr<Bullet,std::default_delete<Bullet>> std::make_unique<Bullet,SDL_Renderer*&,const float&,const float&,int,int,SDL_Texture*&,float&,float&,0>(SDL_Renderer *&,const float &,const float &,int &&,int &&,SDL_Texture *&,float &,float &)' のリファレンスを確認してください
-  
+﻿  EnemyChase.cpp
+  EnemyWalking.cpp
+  コードを生成中...
   Project1.vcxproj -> C:\Users\PC_User\Documents\MySDLGame2\x64\Debug\Project1.exe

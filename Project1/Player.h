@@ -54,6 +54,7 @@ public:
 
 	float velX = 0.0f;
 	float velY = 0.0f;
+	float m_facingDir = 1.0f;
 
 	const SDL_FRect& getPrevRect() const { return m_prevRect; }
 
@@ -82,7 +83,7 @@ private:
 	float m_fireCooldown = 0.7f; // 発射間隔（秒）
 	float m_fireTimer = 0.0f;    // 残り待ち時間
 	bool m_wantsToShoot = false; // 弾を撃ちたいフラグ
-	float m_facingDir = 1.0f;
+
 
 	AimDir m_currentAim = { 1.0f, 0.0f };
 

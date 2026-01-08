@@ -3,6 +3,8 @@
 
 void EnemyChase::update(float dt, const SDL_FRect& playerRect, const Player& player, const vector<BoxCollider>& grounds)
 {
+	updateFlashTimer(dt);
+
 	float dx = player.collider().rect().x - m_collider.rect().x;	// x•ûŒü‚ÌŒü‚«‚Æ·•ª‚ğ‹‚ß‚Ä‚¢‚é
 	float distance = abs(dx);	// dx‚ğâ‘Î’l‚É•ÏŠ·‚µ‚Ä‹——£‚ğ‹‚ß‚Ä‚¢‚é
 

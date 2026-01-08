@@ -2,6 +2,7 @@
 
 void EnemyWalking::update(float dt, const SDL_FRect& playerRect, const Player& player, const vector<BoxCollider>& grounds)
 {
+    updateFlashTimer(dt);
     handleStunState(dt);
 
     if (m_stunTimer <= 0)

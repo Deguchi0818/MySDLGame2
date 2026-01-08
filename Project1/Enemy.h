@@ -28,7 +28,15 @@ public:
 		drawRect.x -= cameraOffset.x;
 		drawRect.y -= cameraOffset.y;
 
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		if (m_flashTimer > 0) 
+		{
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		}
+		else
+		{
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		}
+
 		SDL_RenderFillRect(renderer, &drawRect);
 	}
 
@@ -60,12 +68,20 @@ public:
 
 	virtual void takeDamage() 
 	{
-		if (m_isDead) return;
+		if (m_isDead || m_flashTimer > 0) return;
 
 		--m_hp;
+		m_flashTimer = 0.1f;
+
 		if (m_hp <= 0) 
 		{
 			die();
+		}
+	}
+
+	void updateFlashTimer(float dt) {
+		if (m_flashTimer > 0) {
+			m_flashTimer -= dt;
 		}
 	}
 
@@ -79,6 +95,7 @@ protected:
 	float m_stunTimer = 0.0f;
 	int m_hp = 3;
 	bool m_onGround = false;
+	float m_flashTimer = 0.0f;
 
 };
 
