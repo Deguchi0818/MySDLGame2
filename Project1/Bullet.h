@@ -39,6 +39,9 @@ private:
 	float velY = 0.0f;
 	float bulletSpeed = 400.0f;
 
+	float deletTimer;
+	float deletMaxTime = 2.0f;
+
 	SDL_Texture* m_texture = nullptr;
 };
 

@@ -5,6 +5,7 @@ Bullet::Bullet(SDL_Renderer* renderer,
 	SDL_Texture* texture, float vx, float vy) : m_vx(vx), m_vy(vy), m_isActive(true), m_collider(x, y, w, h)
 {
 	m_texture = texture;
+	deletTimer = deletMaxTime;
 }
 
 Bullet::~Bullet() 
@@ -26,6 +27,15 @@ void Bullet::update(float dt, const vector<BoxCollider>& grounds)
 	r.x += velX  * dt;
 	r.y += velY  * dt;
 	m_collider.setPosition(r.x, r.y);
+
+	if (deletTimer > 0) 
+	{
+		deletTimer -= dt;
+	}
+
+	if (deletTimer <= 0) {
+		deleteBullet();
+	}
 
 	for (const auto& wall : grounds) {
 		if (m_collider.intersect(wall)) {
