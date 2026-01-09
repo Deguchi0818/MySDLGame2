@@ -13,6 +13,7 @@
 #include "EnemyChase.h"
 #include "Collider.h"
 #include "Bullet.h"
+#include "Door.h"
 
 using namespace std;
 
@@ -46,7 +47,8 @@ private:
 
 	unique_ptr<Player> m_player;
 	vector < unique_ptr<Enemy>> m_enemies;
-	vector<std::unique_ptr<Bullet>> m_bullets;
+	vector<unique_ptr<Bullet>> m_bullets;
+	vector<unique_ptr<Door>> m_doors;
 
 	vector<BoxCollider> m_grounds;
 

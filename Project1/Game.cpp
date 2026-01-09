@@ -103,6 +103,28 @@ void Game::update(float dt)
 {
 	m_player->update(dt, m_levelWidth, m_levelHeight);
 
+	for (auto& door : m_doors) {
+		// 1. ドアの更新（アニメーションなど）
+		door->update(dt);
+
+		// 2. プレイヤーとの当たり判定
+		if (m_player->collider().intersect(door->collider())) {
+
+			// 3. もしドアが完全に開いていなければ、壁として押し戻す
+			if (!door->isOpen()) {
+				float vx = m_player->velX;
+				float vy = m_player->velY;
+
+				// 既存の衝突解決メソッドを利用して、ドアを壁として扱う
+				vector<BoxCollider> tempDoorVec = { door->collider() };
+				BoxCollider::resolveCollision(m_player->collider(), vx, vy, tempDoorVec);
+
+				m_player->velX = vx;
+				m_player->velY = vy;
+			}
+		}
+	}
+
 	// プレイヤーの中心座標を計算
 	SDL_FRect pRect = m_player->collider().rect();
 
@@ -186,6 +208,15 @@ void Game::update(float dt)
 				break;
 			}
 		}
+
+		for (auto& door : m_doors) 
+		{
+			if (!door->isOpen() && bullet->collider().intersect(door->collider())) {
+				door->onHit();
+				bullet->deleteBullet();
+				break;
+			}
+		}
 	}
 
 	erase_if(m_bullets, [](const std::unique_ptr<Bullet>& b) {
@@ -224,8 +255,10 @@ void Game::render()
 		SDL_RenderFillRect(m_renderer, &r);
 	}
 
-
-
+	SDL_FPoint cameraOffset = { m_camera.x, m_camera.y };
+	for (auto& door : m_doors) {
+		door->render(m_renderer, cameraOffset);
+	}
 	// 画面に反映
 	SDL_RenderPresent(m_renderer);
 }
@@ -288,6 +321,9 @@ void Game::loadMap(const string& filename)
 			}
 			else if (tile == 'C') {
 				m_enemies.push_back(make_unique<EnemyChase>(x, y, 64.0f, 64.0f));
+			}
+			else if (tile == 'D') {
+				m_doors.push_back(make_unique<Door>(x, y, (float)TILE_SIZE, (float)TILE_SIZE, DoorColor::Blue));
 			}
 		}
 
