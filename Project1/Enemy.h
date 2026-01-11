@@ -72,6 +72,7 @@ public:
 
 		--m_hp;
 		m_flashTimer = 0.1f;
+		applyKnockback(1.0f, 0.0f);
 
 		if (m_hp <= 0) 
 		{

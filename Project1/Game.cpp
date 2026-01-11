@@ -323,7 +323,7 @@ void Game::loadMap(const string& filename)
 				m_enemies.push_back(make_unique<EnemyChase>(x, y, 64.0f, 64.0f));
 			}
 			else if (tile == 'D') {
-				m_doors.push_back(make_unique<Door>(x, y, (float)TILE_SIZE, (float)TILE_SIZE, DoorColor::Blue));
+				m_doors.push_back(make_unique<Door>(x, y, (float)TILE_SIZE, (float)TILE_SIZE * 2, DoorColor::Blue));
 			}
 		}
 

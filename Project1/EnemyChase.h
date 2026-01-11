@@ -21,6 +21,7 @@ public:
 	void patrol(float dt);
 	void chase(float dt, float dx);
 
+
 private:
 	EnemyState m_currentState = EnemyState::PATOROL;
 	float m_detectRange = 300.0f;

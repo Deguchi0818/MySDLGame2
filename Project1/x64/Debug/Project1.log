@@ -1,3 +1,2 @@
-﻿  Game.cpp
-D:\User\Documents\MySDLGame2\Project1\Game.cpp(331,17): warning C4267: '初期化中': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
-  Project1.vcxproj -> D:\User\Documents\MySDLGame2\x64\Debug\Project1.exe
+﻿  EnemyChase.cpp
+  Project1.vcxproj -> C:\Users\PC_User\Documents\MySDLGame2\x64\Debug\Project1.exe
