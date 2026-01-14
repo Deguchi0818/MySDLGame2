@@ -6,6 +6,15 @@
 void JumpState::handleInput(Player& player, const bool* keys)
 {
 	AirborneState::handleInput(player, keys);
+    if (player.isOnGround()) {
+        if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_D]) {
+            player.changeState(make_unique<RunState>());
+        }
+        else {
+            player.changeState(make_unique<IdleState>());
+        }
+        return;
+    }
 }
 
 void JumpState::update(Player& player, float dt)

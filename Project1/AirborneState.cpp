@@ -16,18 +16,19 @@ void AirborneState::handleInput(Player& player, const bool* keys)
 	}
 
 	if (keys[SDL_SCANCODE_SPACE]) {
-		if (player.getCoyoteTimer() > 0) {
-			// コヨーテタイム内なら通常のジャンプ
-			player.velY = player.getParams().jumpPower;
-			player.setCoyoteTimer(0);
-			player.changeState(make_unique<JumpState>());
-		}
-		else {
-			// コヨーテタイム外（空中）で押されたらホバリング開始！
-			// これが「無限ジャンプ」のような挙動になります
-			player.setIsHovering(true);
-			player.velY = player.getParams().hoverFlapSpeed; // 上向きに少し跳ねる
-			player.changeState(make_unique<JumpState>());
+		if (player.isJumpTriggered(keys)) {
+			if (player.getCoyoteTimer() > 0) {
+				// コヨーテタイム中の通常ジャンプ
+				player.velY = player.getParams().jumpPower;
+				player.setCoyoteTimer(0);
+				player.changeState(make_unique<JumpState>());
+			}
+			else if (!player.getIsHovering()) {
+				// 空中で初めて押した時だけホバリング開始！
+				player.setIsHovering(true);
+				player.velY = player.getParams().hoverFlapSpeed;
+				player.changeState(make_unique<JumpState>());
+			}
 		}
 	}
 }

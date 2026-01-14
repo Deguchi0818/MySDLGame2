@@ -5,10 +5,9 @@
 
 void IdleState::handleInput(Player& player, const bool* keys) 
 {
-    if (keys[SDL_SCANCODE_SPACE]) {
-        player.velY = player.getParams().jumpPower;
-        player.changeState(std::make_unique<JumpState>());
-    }
+    GroundedState::handleInput(player, keys);
+
+    if (!player.isOnGround()) return;
 
     if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_D]) {
         player.changeState(std::make_unique<RunState>());

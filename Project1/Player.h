@@ -56,6 +56,13 @@ public:
 	void setJumpBufferTimer(float time) { jumpBufferTimer = time; }
 	void resetPosition(float x, float y);
 
+	bool isJumpTriggered(const bool* keys) {
+		bool current = keys[SDL_SCANCODE_SPACE];
+		bool triggered = (current && !m_prevJumpKey);
+		m_prevJumpKey = current; // 状態を更新
+		return triggered;
+	}
+
 	bool wantsToShoot() const { return m_wantsToShoot; }
 	void consumeShootFlag() { m_wantsToShoot = false; } // フラグを消費（リセット）
 	float getFacingDir() const { return m_facingDir; }  // 向きを教える
@@ -94,6 +101,7 @@ private:
 	bool isHovering;
 	bool m_onGround = false;
 	bool prevJumpPressed;
+	bool m_prevJumpKey = false;
 
 	float m_fireCooldown = 0.7f; // 発射間隔（秒）
 	float m_fireTimer = 0.0f;    // 残り待ち時間

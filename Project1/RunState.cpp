@@ -2,16 +2,16 @@
 #include "Player.h"
 #include "IdleState.h"
 
-void RunState::handleInput(Player& player, const bool* keys) {
+void RunState::handleInput(Player& player, const bool* keys)
+{
 	GroundedState::handleInput(player, keys);
 
-	// 左右どちらのキーも押されていなければ待機状態へ
+	if (!player.isOnGround()) return;
+
 	if (!keys[SDL_SCANCODE_A] && !keys[SDL_SCANCODE_D]) {
 		player.changeState(make_unique<IdleState>());
-		return;
 	}
 }
-
 void RunState::update(Player& player, float dt) 
 {
 	const bool* keys = SDL_GetKeyboardState(nullptr);
