@@ -68,10 +68,10 @@ public:
 
 	bool isJumpTriggered() const { return m_jumpTriggered; }
 
-	// 毎フレーム「一回だけ」呼んで、Triggerを計算する
+	
 	void updateInputState(const bool* keys) {
 		bool current = keys[SDL_SCANCODE_SPACE];
-		m_jumpTriggered = (current && !m_prevJumpKey); // 押された瞬間だけ true
+		m_jumpTriggered = (current && !m_prevJumpKey); 
 		m_prevJumpKey = current;
 	}
 
