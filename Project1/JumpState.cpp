@@ -1,31 +1,18 @@
 #include "JumpState.h"
 #include "Player.h"
-#include "RunState.h"
-#include "IdleState.h"
 
-void JumpState::handleInput(Player& player, const bool* keys)
-{
-	AirborneState::handleInput(player, keys);
-    if (player.isOnGround()) {
-        if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_D]) {
-            player.changeState(make_unique<RunState>());
-        }
-        else {
-            player.changeState(make_unique<IdleState>());
-        }
-        return;
-    }
+void JumpState::handleInput(Player& player, const bool* keys) {
+    // 親クラス(AirborneState)の空中移動や着地判定をそのまま使う
+    AirborneState::handleInput(player, keys);
 }
 
-void JumpState::update(Player& player, float dt)
-{
+void JumpState::update(Player& player, float dt) {
+    // 親クラス(AirborneState)の重力計算をそのまま使う
     AirborneState::update(player, dt);
 
+    // スペースを離したらホバリング状態を解除する
     const bool* keys = SDL_GetKeyboardState(nullptr);
-    bool curJump = keys[SDL_SCANCODE_SPACE];
-    if (!curJump && player.getIsHovering()) {
+    if (!keys[SDL_SCANCODE_SPACE] && player.getIsHovering()) {
         player.setIsHovering(false);
     }
-
-
 }

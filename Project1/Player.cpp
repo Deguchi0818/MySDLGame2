@@ -29,6 +29,8 @@ void Player::update(float dt, int screenW, int screenH)
 
 	const bool* keys = SDL_GetKeyboardState(nullptr);
 
+	updateInputState(keys);
+
 	if (m_currentState)
 	{
 		m_currentState->handleInput(*this, keys);

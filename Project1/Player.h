@@ -56,11 +56,23 @@ public:
 	void setJumpBufferTimer(float time) { jumpBufferTimer = time; }
 	void resetPosition(float x, float y);
 
-	bool isJumpTriggered(const bool* keys) {
+	bool m_jumpTriggered = false;
+	bool m_prevJumpKey = false;
+
+	void updateInputTrigger(const bool* keys) {
+		static bool lastJump = false;
+		bool currentJump = keys[SDL_SCANCODE_SPACE];
+		m_jumpTriggered = (currentJump && !lastJump);
+		lastJump = currentJump;
+	}
+
+	bool isJumpTriggered() const { return m_jumpTriggered; }
+
+	// 毎フレーム「一回だけ」呼んで、Triggerを計算する
+	void updateInputState(const bool* keys) {
 		bool current = keys[SDL_SCANCODE_SPACE];
-		bool triggered = (current && !m_prevJumpKey);
-		m_prevJumpKey = current; // 状態を更新
-		return triggered;
+		m_jumpTriggered = (current && !m_prevJumpKey); // 押された瞬間だけ true
+		m_prevJumpKey = current;
 	}
 
 	bool wantsToShoot() const { return m_wantsToShoot; }
@@ -101,7 +113,6 @@ private:
 	bool isHovering;
 	bool m_onGround = false;
 	bool prevJumpPressed;
-	bool m_prevJumpKey = false;
 
 	float m_fireCooldown = 0.7f; // 発射間隔（秒）
 	float m_fireTimer = 0.0f;    // 残り待ち時間
