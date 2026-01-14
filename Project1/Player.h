@@ -97,8 +97,6 @@ private:
 
 	SDL_FRect m_prevRect;
 
-	void horizontalMove(const bool* kyes, float dt);
-	void jump(const bool* kyes, float dt);
 	void applyPhysics(float dt);
 	void updateTimers(float dt);
 	void checkScreenBounds(float screenW, float screenH);

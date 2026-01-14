@@ -40,8 +40,6 @@ void Player::update(float dt, int screenW, int screenH)
 	// タイマーの更新
 	updateTimers(dt);
 
-	//horizontalMove(keys, dt);	// 横方向の動き
-	//jump(keys, dt);				// ジャンプ
 	applyPhysics(dt);			// 動きの更新
 	attack(keys, dt);
 
@@ -84,87 +82,7 @@ void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 	SDL_RenderTextureRotated(renderer, m_texture, nullptr, &dst, 0.0f, nullptr, flip);
 }
 
-void Player::horizontalMove(const bool* keys, float dt)
-{
-	bool curA = keys[SDL_SCANCODE_A];
-	bool curD = keys[SDL_SCANCODE_D];
 
-	velX *= 0.0f;
-
-	if (curA)
-	{
-		velX -= m_params.speed;
-		m_facingDir = -1.0f;
-	}
-
-	if (curD)
-	{
-		velX += m_params.speed;
-		m_facingDir = 1.0f;
-	}
-
-}
-
-void Player::jump(const bool* keys, float dt) 
-{
-	bool curJump = keys[SDL_SCANCODE_SPACE];
-	bool jumpPressed = (curJump && !prevJumpPressed);   // 「押した瞬間」
-	prevJumpPressed = curJump;
-
-	bool canJump = m_onGround || (coyoteTimer > 0);
-	if (jumpPressed)
-	{
-		jumpBufferTimer = m_params.jumpBufferMax;
-	}
-
-
-	if (!curJump && isHovering)
-	{
-		isHovering = false;
-	}
-
-
-
-	float currentGravity = m_params.gravity;
-	if (isHovering)
-	{
-		currentGravity = m_params.hoverGravity;
-	}
-	else
-	{
-		if (velY > 0)
-		{
-			currentGravity *= m_params.fallMultiplier;
-		}
-	}
-
-	if (jumpBufferTimer > 0)
-	{
-		if (curJump && canJump)
-		{
-			velY = m_params.jumpPower;
-			isHovering = false;
-			coyoteTimer = 0.0f;
-			jumpBufferTimer = 0.0f;
-			setOnGround(false);
-		}
-		else if (jumpPressed)
-		{
-			isHovering = true;
-			coyoteTimer = 0.0f;
-			jumpBufferTimer = 0.0f;
-			velY = m_params.hoverFlapSpeed;
-		}
-	}
-
-	velY += currentGravity * dt;
-
-	if (isHovering && velY > m_params.hoverFallMaxSpeed)
-	{
-		velY = m_params.hoverFallMaxSpeed;
-	}
-
-}
 
 void Player::applyPhysics(float dt) 
 {
