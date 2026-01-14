@@ -20,6 +20,14 @@ struct PlayerParams
 	float jumpBufferMax = 0.12f;
 };
 
+enum class PlayerState {
+	IDLE,
+	RUNNING,
+	JUMPING,
+	FALLING,
+	HOVERING
+};
+
 struct AimDir {
 	float vx;
 	float vy;

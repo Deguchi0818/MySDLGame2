@@ -1,2 +1,4 @@
-﻿  EnemyChase.cpp
-  Project1.vcxproj -> C:\Users\PC_User\Documents\MySDLGame2\x64\Debug\Project1.exe
+﻿  Player.cpp
+C:\Users\ktc\Documents\MySDLGame2\Project1\Player.cpp(40,29): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\ktc\Documents\MySDLGame2\Project1\Player.cpp(40,20): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+  Project1.vcxproj -> C:\Users\ktc\Documents\MySDLGame2\x64\Debug\Project1.exe

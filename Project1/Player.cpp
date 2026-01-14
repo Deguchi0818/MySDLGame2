@@ -71,7 +71,10 @@ void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 		return;
 	}
 
-	SDL_RenderTexture(renderer, m_texture, nullptr, &dst);
+	//SDL_RenderTexture(renderer, m_texture, nullptr, &dst);
+
+	SDL_FlipMode flip = (m_facingDir > 0) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+	SDL_RenderTextureRotated(renderer, m_texture, nullptr, &dst, 0.0f, nullptr, flip);
 }
 
 void Player::horizontalMove(const bool* keys, float dt)
