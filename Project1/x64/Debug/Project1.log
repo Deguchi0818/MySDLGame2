@@ -1,16 +1,5 @@
-﻿  AirborneState.cpp
-  Enemy.cpp
-  EnemyChase.cpp
-  EnemyWalking.cpp
-  Game.cpp
-C:\Users\PC_User\Documents\MySDLGame2\Project1\Game.cpp(330,17): warning C4267: '初期化中': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
-  GroundedState.cpp
+﻿  GroundedState.cpp
   IdleState.cpp
-  JumpState.cpp
-  Player.cpp
-C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.cpp(48,29): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.cpp(48,20): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-  RunState.cpp
   main.cpp
   コードを生成中...
   Project1.vcxproj -> C:\Users\PC_User\Documents\MySDLGame2\x64\Debug\Project1.exe

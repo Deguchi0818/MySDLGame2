@@ -56,8 +56,7 @@ public:
 	void setJumpBufferTimer(float time) { jumpBufferTimer = time; }
 	void resetPosition(float x, float y);
 
-	bool m_jumpTriggered = false;
-	bool m_prevJumpKey = false;
+	
 
 	void updateInputTrigger(const bool* keys) {
 		static bool lastJump = false;
@@ -116,6 +115,8 @@ private:
 	float m_fireTimer = 0.0f;    // Žc‚è‘Ò‚¿ŽžŠÔ
 	bool m_wantsToShoot = false; // ’e‚ðŒ‚‚¿‚½‚¢ƒtƒ‰ƒO
 
+	bool m_jumpTriggered = false;
+	bool m_prevJumpKey = false;
 
 	AimDir m_currentAim = { 1.0f, 0.0f };
 

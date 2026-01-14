@@ -15,12 +15,16 @@ void AirborneState::handleInput(Player& player, const bool* keys) {
         player.m_facingDir = 1.0f;
     }
 
-    // 2. 空中でのアクション（ジャンプまたはホバリング開始）
-    if (player.m_jumpTriggered) {
-        // まだホバリングしていないなら、上向きに力を加えてホバリング開始
-        if (!player.getIsHovering()) {
+    if (player.isJumpTriggered()) {
+        if (player.getCoyoteTimer() > 0) {
+            player.velY = player.getParams().jumpPower;
+            player.setCoyoteTimer(0);
+            player.changeState(make_unique<JumpState>());
+        }
+        else {
+            // 空中なら何度でもフラップ(再上昇)できるようにする
             player.setIsHovering(true);
-            player.velY = player.getParams().hoverFlapSpeed; // ここで1回だけ跳ねる
+            player.velY = player.getParams().hoverFlapSpeed;
             player.changeState(make_unique<JumpState>());
         }
     }
