@@ -1,0 +1,22 @@
+#include "JumpState.h"
+#include "Player.h"
+#include "RunState.h"
+#include "IdleState.h"
+
+void JumpState::handleInput(Player& player, const bool* keys)
+{
+	AirborneState::handleInput(player, keys);
+}
+
+void JumpState::update(Player& player, float dt)
+{
+    AirborneState::update(player, dt);
+
+    const bool* keys = SDL_GetKeyboardState(nullptr);
+    bool curJump = keys[SDL_SCANCODE_SPACE];
+    if (!curJump && player.getIsHovering()) {
+        player.setIsHovering(false);
+    }
+
+
+}

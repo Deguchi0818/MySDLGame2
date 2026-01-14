@@ -1,7 +1,11 @@
 #pragma once
 #include "Collider.h"
+#include "PlayerState.h"
+#include "IdleState.h"
 
 #include <SDL3/SDL.h>
+using namespace std;
+
 struct PlayerParams 
 {
 	float speed = 0.0f;
@@ -18,14 +22,6 @@ struct PlayerParams
 	float coyoteTimeMax = 0.12f;
 
 	float jumpBufferMax = 0.12f;
-};
-
-enum class PlayerState {
-	IDLE,
-	RUNNING,
-	JUMPING,
-	FALLING,
-	HOVERING
 };
 
 struct AimDir {
@@ -52,6 +48,12 @@ public:
 
 	void setOnGround(bool on);
 	bool isOnGround() const;
+	void setIsHovering(bool hover) { isHovering = hover; }
+	bool getIsHovering() const { return isHovering; }
+	float getCoyoteTimer() const { return coyoteTimer; }
+	void setCoyoteTimer(float time) { coyoteTimer = time; }
+	float getJumpBufferTimer() const { return jumpBufferTimer; }
+	void setJumpBufferTimer(float time) { jumpBufferTimer = time; }
 	void resetPosition(float x, float y);
 
 	bool wantsToShoot() const { return m_wantsToShoot; }
@@ -65,6 +67,11 @@ public:
 	float m_facingDir = 1.0f;
 
 	const SDL_FRect& getPrevRect() const { return m_prevRect; }
+
+
+	void changeState(unique_ptr<PlayerState> newState);
+
+	const PlayerParams& getParams() const { return m_params; }
 
 private:
 	BoxCollider m_collider;
@@ -96,5 +103,7 @@ private:
 	AimDir m_currentAim = { 1.0f, 0.0f };
 
 	SDL_Texture* m_texture = nullptr;
+
+	unique_ptr<PlayerState> m_currentState;
 };
 

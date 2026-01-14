@@ -19,25 +19,37 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AirborneState.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="EnemyChase.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GroundedState.cpp" />
+    <ClCompile Include="IdleState.cpp" />
+    <ClCompile Include="JumpState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="EnemyWalking.cpp" />
+    <ClCompile Include="PlayerState.cpp" />
+    <ClCompile Include="RunState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AirborneState.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="EnemyChase.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GroundedState.h" />
+    <ClInclude Include="IdleState.h" />
+    <ClInclude Include="JumpState.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="EnemyWalking.h" />
+    <ClInclude Include="PlayerState.h" />
+    <ClInclude Include="RunState.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

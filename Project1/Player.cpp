@@ -10,7 +10,7 @@ Player::Player(SDL_Renderer* renderer,
 	if (!m_texture) {
 		SDL_Log("IMG_LoadTexture failed: %s", SDL_GetError());
 	}
-
+	changeState(make_unique<IdleState>());
 }
 Player::~Player() 
 {
@@ -29,16 +29,23 @@ void Player::update(float dt, int screenW, int screenH)
 
 	const bool* keys = SDL_GetKeyboardState(nullptr);
 
+	if (m_currentState)
+	{
+		m_currentState->handleInput(*this, keys);
+		m_currentState->update(*this, dt);
+	}
+
 	// タイマーの更新
 	updateTimers(dt);
 
-	horizontalMove(keys, dt);	// 横方向の動き
-	jump(keys, dt);				// ジャンプ
+	//horizontalMove(keys, dt);	// 横方向の動き
+	//jump(keys, dt);				// ジャンプ
 	applyPhysics(dt);			// 動きの更新
 	attack(keys, dt);
 
 	checkScreenBounds(screenW, screenH);
 
+	
 }
 
 void Player::setOnGround(bool on) 
@@ -70,8 +77,6 @@ void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 		SDL_RenderFillRect(renderer, &dst);
 		return;
 	}
-
-	//SDL_RenderTexture(renderer, m_texture, nullptr, &dst);
 
 	SDL_FlipMode flip = (m_facingDir > 0) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 	SDL_RenderTextureRotated(renderer, m_texture, nullptr, &dst, 0.0f, nullptr, flip);
@@ -264,4 +269,8 @@ void Player::applyKnockback(float forceX,  float forceY)
 	velX = forceX;
 	velY = forceY;
 	setOnGround(false);
+}
+
+void Player::changeState(std::unique_ptr<PlayerState> newState) {
+	m_currentState = std::move(newState);
 }
