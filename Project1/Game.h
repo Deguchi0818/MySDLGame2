@@ -17,6 +17,13 @@
 
 using namespace std;
 
+enum class GameStatus {
+	Title,
+	Playing,
+	BossBattle,
+	Clear
+};
+
 class Game
 {
 public:
@@ -28,6 +35,8 @@ public:
 	
 	void run();
 private:
+	GameStatus m_status = GameStatus::Title;
+
 	// ƒCƒxƒ“ƒgˆ—
 	void processEvents();
 
@@ -68,5 +77,12 @@ private:
 	SDL_Texture* m_bulletTexture = nullptr;
 
 	const int TILE_SIZE = 50;
+
+	SDL_Texture* m_titleLogo = nullptr;
+	float m_titleTimer = 0.0f;
+
+	void loadTitleAssets();
+	void renderTitle();
+	void renderClear();
 };
 

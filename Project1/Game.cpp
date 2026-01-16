@@ -35,6 +35,8 @@ bool Game::init(const string& title, int width, int height)
 		return false;
 	}
 
+	loadTitleAssets();
+
 	m_camera.w = static_cast<float>(m_width);
 	m_camera.h = static_cast<float>(m_height);
 
@@ -89,143 +91,167 @@ void Game::processEvents()
 		}
 
 		else if (event.type == SDL_EVENT_KEY_DOWN) {
-			if (event.key.key == SDLK_ESCAPE) {
+			// タイトル画面の時
+			if (m_status == GameStatus::Title) {
+				if (event.key.key == SDLK_SPACE) {
+					m_status = GameStatus::Playing; // ゲーム開始！
+				}
+			}
+			// クリア画面の時
+			else if (m_status == GameStatus::Clear) {
+				if (event.key.key == SDLK_T) {
+					m_status = GameStatus::Title;
+				}
+			}
+			else if (event.key.key == SDLK_ESCAPE) {
 				m_isRunning = false;
 			}
 
-			else if(event.key.key == SDLK_R)
+			else if (event.key.key == SDLK_R)
 				loadConfig("PlayerParams.csv");
+		}
+		else if (event.type == SDL_EVENT_KEY_DOWN) {
+			
 		}
 	}
 }
 
 void Game::update(float dt)
 {
-	m_player->update(dt, m_levelWidth, m_levelHeight);
-
-	for (auto& door : m_doors) {
-		// 1. ドアの更新（アニメーションなど）
-		door->update(dt);
-
-		// 2. プレイヤーとの当たり判定
-		if (m_player->collider().intersect(door->collider())) {
-
-			// 3. もしドアが完全に開いていなければ、壁として押し戻す
-			if (!door->isOpen()) {
-				float vx = m_player->velX;
-				float vy = m_player->velY;
-
-				// 既存の衝突解決メソッドを利用して、ドアを壁として扱う
-				vector<BoxCollider> tempDoorVec = { door->collider() };
-				BoxCollider::resolveCollision(m_player->collider(), vx, vy, tempDoorVec);
-
-				m_player->velX = vx;
-				m_player->velY = vy;
-			}
-		}
+	if (m_status == GameStatus::Title) 
+	{
+		m_titleTimer += dt;
 	}
 
-	// プレイヤーの中心座標を計算
-	SDL_FRect pRect = m_player->collider().rect();
+	if (m_status == GameStatus::Playing || m_status == GameStatus::BossBattle) 
+	{
+		m_player->update(dt, m_levelWidth, m_levelHeight);
 
-	bool onGround = BoxCollider::resolveCollision(m_player->collider(), m_player->velX, m_player->velY, m_grounds);
-	m_player->setOnGround(onGround);
+		for (auto& door : m_doors) {
+			// 1. ドアの更新（アニメーションなど）
+			door->update(dt);
 
-	for (auto& enemy : m_enemies) {
-		enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
+			// 2. プレイヤーとの当たり判定
+			if (m_player->collider().intersect(door->collider())) {
 
-		
+				// 3. もしドアが完全に開いていなければ、壁として押し戻す
+				if (!door->isOpen()) {
+					float vx = m_player->velX;
+					float vy = m_player->velY;
 
-		if (!enemy->isDead()) 
-		{
-			if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
+					// 既存の衝突解決メソッドを利用して、ドアを壁として扱う
+					vector<BoxCollider> tempDoorVec = { door->collider() };
+					BoxCollider::resolveCollision(m_player->collider(), vx, vy, tempDoorVec);
+
+					m_player->velX = vx;
+					m_player->velY = vy;
+				}
+			}
+		}
+
+		// プレイヤーの中心座標を計算
+		SDL_FRect pRect = m_player->collider().rect();
+
+		bool onGround = BoxCollider::resolveCollision(m_player->collider(), m_player->velX, m_player->velY, m_grounds);
+		m_player->setOnGround(onGround);
+
+		for (auto& enemy : m_enemies) {
+			enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
+
+
+
+			if (!enemy->isDead())
 			{
-				float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
-				float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
+				if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
+				{
+					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
+					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
 
-				// 敵からみてplayerがどちらに向いているかの判定
-				float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
+					// 敵からみてplayerがどちらに向いているかの判定
+					float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
 
-				m_player->applyKnockback(direction * 500.0f, -400.0f);
-				enemy->applyKnockback(direction * -500.0f, -400.0f);
+					m_player->applyKnockback(direction * 500.0f, -400.0f);
+					enemy->applyKnockback(direction * -500.0f, -400.0f);
+				}
 			}
 		}
-	}
 
-	float playerCenterX = pRect.x + pRect.w / 2.0f;
-	float playerCenterY = pRect.y + pRect.h / 2.0f;
-	// カメラをプレイヤーの中心に合わせる
-	m_camera.x = playerCenterX - m_camera.w / 2.0f;
-	m_camera.y = playerCenterY - m_camera.h / 2.0f;
-	// カメラの範囲制限
-	if (m_camera.x < 0)
-	{
-		m_camera.x = 0;
-	}
-	if (m_camera.y < 0)
-	{
-		m_camera.y = 0;
-	}
-	if (m_camera.x > m_levelWidth - m_camera.w) m_camera.x = m_levelWidth - m_camera.w;
-	if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
-
-	float bulletW = 16.0f;
-	float bulletH = 16.0f;
-
-	float spawnX = (m_player->m_facingDir > 0) ? (pRect.x + pRect.w) : (pRect.x - bulletW);
-	float spawnY = playerCenterY - (bulletH / 2.0f);
-
-	// 弾の発射
-	if (m_player->wantsToShoot())
-	{
-		AimDir dir = m_player->getAimDir();
-
-		m_bullets.push_back(make_unique<Bullet>(
-			m_renderer,
-			spawnX, spawnY, bulletW, bulletH,
-			// 弾を撃つたびに IMG_LoadTextureを読んでいたが起動時にポインタで場所を指定することで一回の読み込みでよくなりかくつきが解消された
-			m_bulletTexture,
-			dir.vx, dir.vy
-		));
-
-		m_player->consumeShootFlag();
-	}
-
-	for (auto& bullet : m_bullets) {
-		bullet->update(dt, m_grounds);
-		// 消えている弾は無視
-		if (!bullet->isActive()) continue;
-
-		for (auto& enemy : m_enemies)
+		float playerCenterX = pRect.x + pRect.w / 2.0f;
+		float playerCenterY = pRect.y + pRect.h / 2.0f;
+		// カメラをプレイヤーの中心に合わせる
+		m_camera.x = playerCenterX - m_camera.w / 2.0f;
+		m_camera.y = playerCenterY - m_camera.h / 2.0f;
+		// カメラの範囲制限
+		if (m_camera.x < 0)
 		{
-			// 既に消えていいる敵を無視
-			if (enemy->isDead()) continue;
+			m_camera.x = 0;
+		}
+		if (m_camera.y < 0)
+		{
+			m_camera.y = 0;
+		}
+		if (m_camera.x > m_levelWidth - m_camera.w) m_camera.x = m_levelWidth - m_camera.w;
+		if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
 
-			if (bullet->collider().intersect(enemy->collider()))
+		float bulletW = 16.0f;
+		float bulletH = 16.0f;
+
+		float spawnX = (m_player->m_facingDir > 0) ? (pRect.x + pRect.w) : (pRect.x - bulletW);
+		float spawnY = playerCenterY - (bulletH / 2.0f);
+
+		// 弾の発射
+		if (m_player->wantsToShoot())
+		{
+			AimDir dir = m_player->getAimDir();
+
+			m_bullets.push_back(make_unique<Bullet>(
+				m_renderer,
+				spawnX, spawnY, bulletW, bulletH,
+				// 弾を撃つたびに IMG_LoadTextureを読んでいたが起動時にポインタで場所を指定することで一回の読み込みでよくなりかくつきが解消された
+				m_bulletTexture,
+				dir.vx, dir.vy
+			));
+
+			m_player->consumeShootFlag();
+		}
+
+		for (auto& bullet : m_bullets) {
+			bullet->update(dt, m_grounds);
+			// 消えている弾は無視
+			if (!bullet->isActive()) continue;
+
+			for (auto& enemy : m_enemies)
 			{
-				enemy->takeDamage();
-				bullet->deleteBullet();
-				break;
+				// 既に消えていいる敵を無視
+				if (enemy->isDead()) continue;
+
+				if (bullet->collider().intersect(enemy->collider()))
+				{
+					enemy->takeDamage();
+					bullet->deleteBullet();
+					break;
+				}
+			}
+
+			for (auto& door : m_doors)
+			{
+				if (!door->isOpen() && bullet->collider().intersect(door->collider())) {
+					door->onHit();
+					bullet->deleteBullet();
+					break;
+				}
 			}
 		}
 
-		for (auto& door : m_doors) 
-		{
-			if (!door->isOpen() && bullet->collider().intersect(door->collider())) {
-				door->onHit();
-				bullet->deleteBullet();
-				break;
-			}
-		}
+		erase_if(m_bullets, [](const std::unique_ptr<Bullet>& b) {
+			return !b->isActive();
+			});
+
+		erase_if(m_enemies, [](const std::unique_ptr<Enemy>& e) {
+			return e->isDead();
+			});
 	}
-
-	erase_if(m_bullets, [](const std::unique_ptr<Bullet>& b) {
-		return !b->isActive();
-		});
-
-	erase_if(m_enemies, [](const std::unique_ptr<Enemy>& e) {
-		return e->isDead();
-		});
+	
 }
 
 void Game::render()
@@ -234,31 +260,46 @@ void Game::render()
 	SDL_RenderClear(m_renderer);
 
 
-	m_player->render(m_renderer, { m_camera.x, m_camera.y });
-
-	for (auto& bullet : m_bullets) {
-		bullet->render(m_renderer, { m_camera.x, m_camera.y });
+	if (m_status == GameStatus::Title) {
+		// タイトル画面の描画
+		//SDL_SetRenderDrawColor(m_renderer, 0, 100, 0, 255);
+		//SDL_RenderClear(m_renderer);
+		renderTitle();
 	}
-	for (auto& enemy : m_enemies) {
-		enemy->render(m_renderer, { m_camera.x, m_camera.y });
+	else if (m_status == GameStatus::Clear) {
+		// クリア画面の描画
+		SDL_SetRenderDrawColor(m_renderer, 100, 0, 0, 255);
+		SDL_RenderClear(m_renderer);
 	}
-
-
-	SDL_SetRenderDrawColor(m_renderer, 100, 50, 0, 255);
-	for (auto& g : m_grounds) 
+	else 
 	{
-		SDL_FRect r = g.rect();
-		r.x -= m_camera.x;
-		r.y -= m_camera.y;
+		m_player->render(m_renderer, { m_camera.x, m_camera.y });
+
+		for (auto& bullet : m_bullets) {
+			bullet->render(m_renderer, { m_camera.x, m_camera.y });
+		}
+		for (auto& enemy : m_enemies) {
+			enemy->render(m_renderer, { m_camera.x, m_camera.y });
+		}
 
 
-		SDL_RenderFillRect(m_renderer, &r);
+		SDL_SetRenderDrawColor(m_renderer, 100, 50, 0, 255);
+		for (auto& g : m_grounds)
+		{
+			SDL_FRect r = g.rect();
+			r.x -= m_camera.x;
+			r.y -= m_camera.y;
+
+
+			SDL_RenderFillRect(m_renderer, &r);
+		}
+
+		SDL_FPoint cameraOffset = { m_camera.x, m_camera.y };
+		for (auto& door : m_doors) {
+			door->render(m_renderer, cameraOffset);
+		}
 	}
 
-	SDL_FPoint cameraOffset = { m_camera.x, m_camera.y };
-	for (auto& door : m_doors) {
-		door->render(m_renderer, cameraOffset);
-	}
 	// 画面に反映
 	SDL_RenderPresent(m_renderer);
 }
@@ -380,4 +421,29 @@ void Game::loadConfig(const string& filename)
 	{
 		m_player->applyParams(params);
 	}
+}
+
+void Game::loadTitleAssets()
+{
+	//m_titleLogo = IMG_LoadTexture(m_renderer, "assets/title.png");
+}
+
+void Game::renderTitle() 
+{
+	SDL_SetRenderDrawColor(m_renderer, 10, 10, 30, 255);
+	SDL_RenderClear(m_renderer);
+
+	if (m_titleLogo) 
+	{
+		SDL_FRect logoRect = { 200, 100, 400, 200 };
+		SDL_RenderTexture(m_renderer, m_titleLogo, nullptr, &logoRect);
+	}
+
+	float alpha = (sinf(m_titleTimer * 2.0f) + 1.0f) / 2.0f * 255.0f;
+
+	SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, (Uint8)alpha);
+
+	SDL_FRect textRect = { 300, 400, 200, 30 };
+	SDL_RenderFillRect(m_renderer, &textRect);
 }
