@@ -10,11 +10,11 @@ public:
 		float x, float y, float w, float h,
 		SDL_Texture* texture, float vx, float vy);
 
-	~Bullet();
+	virtual ~Bullet();
 
-	void update(float dt, const vector<BoxCollider>& grounds);
+	virtual void update(float dt, const vector<BoxCollider>& grounds);
 
-	void render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
+	virtual void render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 	{
 		if (!m_isActive) {
 			return;
@@ -30,7 +30,7 @@ public:
 	void deleteBullet() { m_isActive = false; }
 	const BoxCollider& collider() const { return m_collider; }
 
-private:
+protected:
 	BoxCollider m_collider;
 	bool m_isActive;
 	float m_vx;

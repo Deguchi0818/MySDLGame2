@@ -51,7 +51,7 @@ bool Game::init(const string& title, int width, int height)
 	m_isRunning = true;
 
 	m_bulletTexture = IMG_LoadTexture(m_renderer, "assets/bullet.png");
-
+	SDL_Texture* bulletTex = IMG_LoadTexture(m_renderer, "assets/bullet.png");
 	loadConfig("PlayerParams.csv");
 	loadMap("map.txt");
 
@@ -362,6 +362,11 @@ void Game::loadMap(const string& filename)
 			}
 			else if (tile == 'C') {
 				m_enemies.push_back(make_unique<EnemyChase>(x, y, 64.0f, 64.0f));
+			}
+			else if (tile == 'S') {
+				auto shooter = make_unique<EnemyShooter>(x, y, 64.0f, 64.0f);
+				shooter->setBulletTexture(m_bulletTexture);
+				m_enemies.push_back(std::move(shooter));
 			}
 			else if (tile == 'D') {
 				m_doors.push_back(make_unique<Door>(x, y, (float)TILE_SIZE, (float)TILE_SIZE * 2, DoorColor::Blue));

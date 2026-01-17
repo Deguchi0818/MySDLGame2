@@ -22,9 +22,11 @@
     <ClCompile Include="AirborneState.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Door.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="EnemyChase.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyShooter.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GroundedState.cpp" />
     <ClCompile Include="IdleState.cpp" />
@@ -39,9 +41,11 @@
     <ClInclude Include="AirborneState.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Door.h" />
+    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="EnemyChase.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyShooter.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GroundedState.h" />
     <ClInclude Include="IdleState.h" />
