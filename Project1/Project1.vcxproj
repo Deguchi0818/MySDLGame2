@@ -27,6 +27,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyShooter.cpp" />
+    <ClCompile Include="EnemyTimedPatrol.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GroundedState.cpp" />
     <ClCompile Include="IdleState.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyShooter.h" />
+    <ClInclude Include="EnemyTimedPatrol.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GroundedState.h" />
     <ClInclude Include="IdleState.h" />

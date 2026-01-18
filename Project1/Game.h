@@ -12,6 +12,7 @@
 #include "EnemyWalking.h"
 #include "EnemyChase.h"
 #include "EnemyShooter.h"
+#include "EnemyTimedPatrol.h"
 #include "Collider.h"
 #include "Bullet.h"
 #include "Door.h"
