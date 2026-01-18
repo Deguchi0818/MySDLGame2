@@ -125,6 +125,9 @@ void Game::update(float dt)
 
 	if (m_status == GameStatus::Playing || m_status == GameStatus::BossBattle) 
 	{
+		bool onGround = BoxCollider::resolveCollision(m_player->collider(), m_player->velX, m_player->velY, m_grounds);
+		m_player->setOnGround(onGround);
+
 		m_player->update(dt, m_levelWidth, m_levelHeight);
 
 		for (auto& door : m_doors) {
@@ -152,8 +155,6 @@ void Game::update(float dt)
 		// プレイヤーの中心座標を計算
 		SDL_FRect pRect = m_player->collider().rect();
 
-		bool onGround = BoxCollider::resolveCollision(m_player->collider(), m_player->velX, m_player->velY, m_grounds);
-		m_player->setOnGround(onGround);
 
 		for (auto& enemy : m_enemies) {
 			enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
