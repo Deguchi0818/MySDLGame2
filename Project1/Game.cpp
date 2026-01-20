@@ -263,8 +263,8 @@ void Game::render()
 
 	if (m_status == GameStatus::Title) {
 		// ƒ^ƒCƒgƒ‹‰æ–Ê‚Ì•`‰æ
-		//SDL_SetRenderDrawColor(m_renderer, 0, 100, 0, 255);
-		//SDL_RenderClear(m_renderer);
+		SDL_SetRenderDrawColor(m_renderer, 0, 100, 0, 255);
+		SDL_RenderClear(m_renderer);
 		renderTitle();
 	}
 	else if (m_status == GameStatus::Clear) {
@@ -434,7 +434,7 @@ void Game::loadConfig(const string& filename)
 
 void Game::loadTitleAssets()
 {
-	//m_titleLogo = IMG_LoadTexture(m_renderer, "assets/title.png");
+	m_titleLogo = IMG_LoadTexture(m_renderer, "assets/title.png");
 }
 
 void Game::renderTitle() 
