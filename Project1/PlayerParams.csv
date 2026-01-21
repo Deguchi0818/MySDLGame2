@@ -11,3 +11,5 @@ hoverFallMaxSpeed,150
 coyoteTimeMax,0.12
 ,
 jumpBufferMax,0.12
+,
+ m_hp,100

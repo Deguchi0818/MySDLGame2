@@ -6,6 +6,7 @@ Player::Player(SDL_Renderer* renderer,
 	const char* texturePath)
 	:m_collider(x, y, w, h) 
 {
+	// 画像（テクスチャ）の読み込みと初期状態の設定
 	m_texture = IMG_LoadTexture(renderer, texturePath);
 	if (!m_texture) {
 		SDL_Log("IMG_LoadTexture failed: %s", SDL_GetError());
@@ -16,7 +17,7 @@ Player::Player(SDL_Renderer* renderer,
 }
 Player::~Player() 
 {
-	// Playerが破壊された時textureを破壊
+	// プレイヤー破棄時にテクスチャメモリを解放
 	if (m_texture)
 	{
 		SDL_DestroyTexture(m_texture);
@@ -50,10 +51,12 @@ void Player::update(float dt, int screenW, int screenH)
 	
 }
 
+// 地面についているかの判定
 void Player::setOnGround(bool on) 
 {
 	if (on) 
 	{
+		// 着地時に垂直速度をリセットし、コヨーテタイムを付与
 		velY = 0.0f;
 		coyoteTimer = m_params.coyoteTimeMax;
 	}
@@ -70,6 +73,7 @@ void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 {
 	SDL_FRect dst = m_collider.rect();
 
+	// ワールド座標からスクリーン座標へ変換
 	dst.x -= cameraOffset.x;
 	dst.y -= cameraOffset.y;
 
@@ -85,7 +89,7 @@ void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
 }
 
 
-
+// 動きの更新
 void Player::applyPhysics(float dt) 
 {
 	SDL_FRect r = m_collider.rect();
@@ -96,6 +100,7 @@ void Player::applyPhysics(float dt)
 	m_collider.setPosition(r.x, r.y);
 }
 
+// 各種猶予時間やクールダウンのカウントダウン
 void Player::updateTimers(float dt)
 {
 	if (coyoteTimer > 0)
@@ -116,6 +121,7 @@ void Player::updateTimers(float dt)
 	}
 }
 
+// 画面外に出ないようにする
 void Player::checkScreenBounds(float screenW, float screenH) 
 {
 	SDL_FRect r = m_collider.rect();
@@ -137,6 +143,7 @@ void Player::checkScreenBounds(float screenW, float screenH)
 	m_collider.setPosition(r.x, r.y);
 }
 
+// プレイヤーの位置をリセット
 void Player::resetPosition(float x, float y) 
 {
 	m_collider.setPosition(x, y);
@@ -146,6 +153,7 @@ void Player::resetPosition(float x, float y)
 	m_prevRect = m_collider.rect();
 }
 
+// 攻撃処理
 void Player::attack(const bool* keys, float dt) 
 {
 	bool curAttack = keys[SDL_SCANCODE_LSHIFT];
@@ -190,6 +198,7 @@ void Player::attack(const bool* keys, float dt)
 	}
 }
 
+// ノックバックの適用
 void Player::applyKnockback(float forceX,  float forceY)
 {
 	velX = forceX;
@@ -201,8 +210,10 @@ void Player::changeState(std::unique_ptr<PlayerState> newState) {
 	m_currentState = std::move(newState);
 }
 
+// ダメージを受けた時の処理
 void Player::takeDamage(int damage)
 {
+	// 無敵時間中はダメージ処理をスキップ
 	if (m_invincibleTimer > 0) return;
 
 	m_currentHp -= damage;
