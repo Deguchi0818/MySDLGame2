@@ -86,6 +86,8 @@ public:
 		}
 	}
 
+	virtual void checkPlayerCollision(Player& player) {}
+
 protected:
 	BoxCollider m_collider;
 	bool m_isDead = false;

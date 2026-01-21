@@ -22,6 +22,8 @@ struct PlayerParams
 	float coyoteTimeMax = 0.12f;
 
 	float jumpBufferMax = 0.12f;
+
+	int m_hp = 100.0f;
 };
 
 struct AimDir {
@@ -55,7 +57,8 @@ public:
 	float getJumpBufferTimer() const { return jumpBufferTimer; }
 	void setJumpBufferTimer(float time) { jumpBufferTimer = time; }
 	void resetPosition(float x, float y);
-
+	int getCurrentHp() const { return m_currentHp; }
+	int getMaxHp() const { return m_params.m_hp; }
 	
 
 	void updateInputTrigger(const bool* keys) {
@@ -91,6 +94,8 @@ public:
 
 	const PlayerParams& getParams() const { return m_params; }
 
+	void takeDamage(int damage);
+
 private:
 	BoxCollider m_collider;
 
@@ -117,6 +122,10 @@ private:
 
 	bool m_jumpTriggered = false;
 	bool m_prevJumpKey = false;
+
+	int m_currentHp;
+	float m_invincibleTimer = 0.0f;
+	const float INVINCIBLE_TIME = 1.0f;
 
 	AimDir m_currentAim = { 1.0f, 0.0f };
 

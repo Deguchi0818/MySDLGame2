@@ -11,6 +11,8 @@ Player::Player(SDL_Renderer* renderer,
 		SDL_Log("IMG_LoadTexture failed: %s", SDL_GetError());
 	}
 	changeState(make_unique<IdleState>());
+
+	m_currentHp = m_params.m_hp;
 }
 Player::~Player() 
 {
@@ -108,6 +110,10 @@ void Player::updateTimers(float dt)
 	{
 		m_fireTimer -= dt;
 	}
+	if (m_invincibleTimer > 0)
+	{
+		m_invincibleTimer -= dt;
+	}
 }
 
 void Player::checkScreenBounds(float screenW, float screenH) 
@@ -193,4 +199,19 @@ void Player::applyKnockback(float forceX,  float forceY)
 
 void Player::changeState(std::unique_ptr<PlayerState> newState) {
 	m_currentState = std::move(newState);
+}
+
+void Player::takeDamage(int damage)
+{
+	if (m_invincibleTimer > 0) return;
+
+	m_currentHp -= damage;
+	if (m_currentHp < 0)
+	{
+		m_currentHp = 0;
+	}
+
+	m_invincibleTimer = INVINCIBLE_TIME;
+
+
 }

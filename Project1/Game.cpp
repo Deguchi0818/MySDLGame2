@@ -131,10 +131,10 @@ void Game::update(float dt)
 		m_player->update(dt, m_levelWidth, m_levelHeight);
 
 		for (auto& door : m_doors) {
-			// 1. ドアの更新（アニメーションなど）
+			// ドアの更新（アニメーションなど）
 			door->update(dt);
 
-			// 2. プレイヤーとの当たり判定
+			// プレイヤーとの当たり判定
 			if (m_player->collider().intersect(door->collider())) {
 
 				// 3. もしドアが完全に開いていなければ、壁として押し戻す
@@ -160,11 +160,14 @@ void Game::update(float dt)
 			enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
 
 
-
+			// 敵との当たり判定ループ
 			if (!enemy->isDead())
 			{
 				if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
 				{
+					m_player->takeDamage(10);
+					enemy->checkPlayerCollision(*m_player);
+
 					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
 					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
 
@@ -299,6 +302,33 @@ void Game::render()
 		for (auto& door : m_doors) {
 			door->render(m_renderer, cameraOffset);
 		}
+
+		if (m_status == GameStatus::Playing || m_status == GameStatus::BossBattle) 
+		{
+			SDL_FRect bgRect = { 20.0f, 20.0f, 200.0f, 20.0f };
+			SDL_SetRenderDrawColor(m_renderer, 50, 50, 50, 255);
+			SDL_RenderFillRect(m_renderer, &bgRect);
+
+			float hpRatio = static_cast<float>(m_player->getCurrentHp()) / static_cast<float>(m_player->getMaxHp());
+			float barWidth = 200.0f * hpRatio;
+
+			SDL_FRect hpRect = { 20.0f, 20.0f, barWidth, 20.0f };
+
+			if (hpRatio > 0.5f) {
+				SDL_SetRenderDrawColor(m_renderer, 0, 255, 0, 255);  // 緑
+			}
+			else if (hpRatio > 0.2f) {
+				SDL_SetRenderDrawColor(m_renderer, 255, 255, 0, 255); // 黄色
+			}
+			else {
+				SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 255);   // 赤
+			}
+
+			SDL_RenderFillRect(m_renderer, &hpRect);
+
+			SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+			SDL_RenderRect(m_renderer, &bgRect);
+		}
 	}
 
 	// 画面に反映
@@ -419,6 +449,7 @@ void Game::loadConfig(const string& filename)
 			else if (name == "hoverFallMaxSpeed") params.hoverFallMaxSpeed = value;
 			else if (name == "coyoteTimeMax") params.coyoteTimeMax = value;
 			else if (name == "jumpBufferMax") params.jumpBufferMax = value;
+			else if (name == "m_hp") params.m_hp = static_cast<int>(value);
 		}
 		catch (...) {
 			// 数字に変換できない行（ヘッダーや空行）は無視する
