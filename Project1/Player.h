@@ -61,12 +61,12 @@ public:
 	int getMaxHp() const { return m_params.m_hp; }
 	
 
-	void updateInputTrigger(const bool* keys) {
-		static bool lastJump = false;
-		bool currentJump = keys[SDL_SCANCODE_SPACE];
-		m_jumpTriggered = (currentJump && !lastJump);
-		lastJump = currentJump;
-	}
+	//void updateInputTrigger(const bool* keys) {
+	//	static bool lastJump = false;
+	//	bool currentJump = keys[SDL_SCANCODE_SPACE];
+	//	m_jumpTriggered = (currentJump && !lastJump);
+	//	lastJump = currentJump;
+	//}
 
 	bool isJumpTriggered() const { return m_jumpTriggered; }
 
