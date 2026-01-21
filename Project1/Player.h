@@ -44,7 +44,11 @@ public:
 	void render(SDL_Renderer* rendere, const SDL_FPoint& cameraOffset);
 
 	// パラメータの適用
-	void applyParams(const PlayerParams& p) { m_params = p; }
+	void applyParams(const PlayerParams& p) 
+	{ 
+		m_params = p;
+		m_currentHp = m_params.m_hp;
+	}
 
 	BoxCollider& collider() { return m_collider; }
 	const BoxCollider& collider() const { return m_collider; }
@@ -60,6 +64,7 @@ public:
 	void resetPosition(float x, float y);					// プレイヤーの位置をリセット
 	int getCurrentHp() const { return m_currentHp; }		// 現在のHPを取得
 	int getMaxHp() const { return m_params.m_hp; }			// 最大HPを取得
+	float getInvincibleTimer() const { return m_invincibleTimer; } // 無敵タイムを取得 
 	
 
 	bool isJumpTriggered() const { return m_jumpTriggered; }	// ジャンプがトリガーされたか

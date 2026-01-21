@@ -12,8 +12,6 @@ Player::Player(SDL_Renderer* renderer,
 		SDL_Log("IMG_LoadTexture failed: %s", SDL_GetError());
 	}
 	changeState(make_unique<IdleState>());
-
-	m_currentHp = m_params.m_hp;
 }
 Player::~Player() 
 {
@@ -67,27 +65,6 @@ bool Player::isOnGround() const
 {
 	return m_onGround;
 }
-
-
-void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
-{
-	SDL_FRect dst = m_collider.rect();
-
-	// ワールド座標からスクリーン座標へ変換
-	dst.x -= cameraOffset.x;
-	dst.y -= cameraOffset.y;
-
-	if (!m_texture)
-	{
-		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-		SDL_RenderFillRect(renderer, &dst);
-		return;
-	}
-
-	SDL_FlipMode flip = (m_facingDir > 0) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-	SDL_RenderTextureRotated(renderer, m_texture, nullptr, &dst, 0.0f, nullptr, flip);
-}
-
 
 // 動きの更新
 void Player::applyPhysics(float dt) 
@@ -223,6 +200,29 @@ void Player::takeDamage(int damage)
 	}
 
 	m_invincibleTimer = INVINCIBLE_TIME;
+}
 
+void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)
+{
+	SDL_FRect dst = m_collider.rect();
 
+	// ワールド座標からスクリーン座標へ変換
+	dst.x -= cameraOffset.x;
+	dst.y -= cameraOffset.y;
+
+	if (m_invincibleTimer > 0) 
+	{
+		if (static_cast<int>( m_invincibleTimer * 10) % 2 == 0)
+			return;
+	}
+
+	if (!m_texture)
+	{
+		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+		SDL_RenderFillRect(renderer, &dst);
+		return;
+	}
+
+	SDL_FlipMode flip = (m_facingDir > 0) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+	SDL_RenderTextureRotated(renderer, m_texture, nullptr, &dst, 0.0f, nullptr, flip);
 }

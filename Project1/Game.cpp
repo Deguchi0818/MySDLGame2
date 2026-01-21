@@ -159,23 +159,26 @@ void Game::update(float dt)
 		for (auto& enemy : m_enemies) {
 			enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
 
-
+			enemy->checkPlayerCollision(*m_player);
 			// 敵との当たり判定ループ
 			if (!enemy->isDead())
 			{
 				if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
 				{
-					m_player->takeDamage(10);
-					enemy->checkPlayerCollision(*m_player);
+					if (m_player->getInvincibleTimer() <= 0) 
+					{
+						m_player->takeDamage(10);
 
-					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
-					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
+						float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
+						float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
 
-					// 敵からみてplayerがどちらに向いているかの判定
-					float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
 
-					m_player->applyKnockback(direction * 500.0f, -400.0f);
-					enemy->applyKnockback(direction * -500.0f, -400.0f);
+						// 敵からみてplayerがどちらに向いているかの判定
+						float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
+
+						enemy->applyKnockback(direction * -500.0f, -400.0f);
+						m_player->applyKnockback(direction * 500.0f, -400.0f);
+					}
 				}
 			}
 		}

@@ -1,57 +1,57 @@
 ﻿  AirborneState.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'AirborneState.cpp' をコンパイルしています)
   
   Enemy.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'Enemy.cpp' をコンパイルしています)
   
   EnemyChase.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'EnemyChase.cpp' をコンパイルしています)
   
   EnemyShooter.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'EnemyShooter.cpp' をコンパイルしています)
   
   EnemyTimedPatrol.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'EnemyTimedPatrol.cpp' をコンパイルしています)
   
   EnemyWalking.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'EnemyWalking.cpp' をコンパイルしています)
   
   Game.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'Game.cpp' をコンパイルしています)
   
-C:\Users\ktc\Documents\MySDLGame2\Project1\Game.cpp(410,17): warning C4267: '初期化中': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Game.cpp(413,17): warning C4267: '初期化中': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
   GroundedState.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'GroundedState.cpp' をコンパイルしています)
   
   IdleState.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'IdleState.cpp' をコンパイルしています)
   
   JumpState.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'JumpState.cpp' をコンパイルしています)
   
   Player.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'Player.cpp' をコンパイルしています)
   
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.cpp(48,29): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.cpp(48,20): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.cpp(47,29): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.cpp(47,20): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
   RunState.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'RunState.cpp' をコンパイルしています)
   
   main.cpp
-C:\Users\ktc\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\PC_User\Documents\MySDLGame2\Project1\Player.h(26,13): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'main.cpp' をコンパイルしています)
   
   コードを生成中...
-  Project1.vcxproj -> C:\Users\ktc\Documents\MySDLGame2\x64\Debug\Project1.exe
+  Project1.vcxproj -> C:\Users\PC_User\Documents\MySDLGame2\x64\Debug\Project1.exe
