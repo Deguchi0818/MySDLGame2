@@ -35,7 +35,7 @@ bool Game::init(const string& title, int width, int height)
 		return false;
 	}
 
-	loadTitleAssets();
+	loadTextAssets();
 
 	m_camera.w = static_cast<float>(m_width);
 	m_camera.h = static_cast<float>(m_height);
@@ -95,6 +95,22 @@ void Game::processEvents()
 			if (m_status == GameStatus::Title) {
 				if (event.key.key == SDLK_SPACE) {
 					m_status = GameStatus::Playing; // ゲーム開始！
+				}
+			}
+			else if (m_status == GameStatus::GameOver)
+			{
+				if (event.key.key == SDLK_R) 
+				{
+					m_status = GameStatus::Playing;
+
+					resetGame();
+
+				}
+				else if (event.key.key == SDLK_T) 
+				{
+					m_status = GameStatus::Title;
+
+					resetGame();
 				}
 			}
 			// クリア画面の時
@@ -248,6 +264,13 @@ void Game::update(float dt)
 					break;
 				}
 			}
+
+		}
+
+
+		if (m_player->getCurrentHp() <= 0)
+		{
+			m_status = GameStatus::GameOver;
 		}
 
 		erase_if(m_bullets, [](const std::unique_ptr<Bullet>& b) {
@@ -272,6 +295,12 @@ void Game::render()
 		SDL_SetRenderDrawColor(m_renderer, 0, 100, 0, 255);
 		SDL_RenderClear(m_renderer);
 		renderTitle();
+	}
+	else if (m_status == GameStatus::GameOver) 
+	{
+		SDL_SetRenderDrawColor(m_renderer, 0, 100, 0, 255);
+		SDL_RenderClear(m_renderer);
+		renderGameOver();
 	}
 	else if (m_status == GameStatus::Clear) {
 		// クリア画面の描画
@@ -360,6 +389,9 @@ void Game::cleanup()
 void Game::loadMap(const string& filename) 
 {
 	m_grounds.clear();
+	m_enemies.clear();
+	m_bullets.clear();
+	m_doors.clear();
 
 	ifstream file(filename);
 	if (!file.is_open()) 
@@ -466,9 +498,17 @@ void Game::loadConfig(const string& filename)
 	}
 }
 
-void Game::loadTitleAssets()
+void Game::resetGame() 
+{
+	loadMap("map.txt");
+
+	loadConfig("PlayerParams.csv");
+}
+
+void Game::loadTextAssets()
 {
 	m_titleLogo = IMG_LoadTexture(m_renderer, "assets/title.png");
+	m_gameOverLogo = IMG_LoadTexture(m_renderer, "assets/gameover.png");
 }
 
 void Game::renderTitle() 
@@ -476,17 +516,60 @@ void Game::renderTitle()
 	SDL_SetRenderDrawColor(m_renderer, 10, 10, 30, 255);
 	SDL_RenderClear(m_renderer);
 
-	if (m_titleLogo) 
+	if (m_titleLogo)
 	{
-		SDL_FRect logoRect = { 200, 100, 400, 200 };
+		float texW, texH;
+		SDL_GetTextureSize(m_titleLogo, &texW, &texH);
+
+		float scale = 400.0f / texW;
+		float drawW = texW * scale;
+		float drawH = texH * scale;
+
+		SDL_FRect logoRect = {
+			(m_width - drawW) / 2.0f,
+			400.0f,
+			drawW,
+			drawH
+		};
+
+		float alpha = (sinf(m_titleTimer * 2.0f) + 1.0f) / 2.0f * 255.0f;
+
+		SDL_SetTextureBlendMode(m_titleLogo, SDL_BLENDMODE_BLEND); // ブレンドモードを有効化
+		SDL_SetTextureAlphaMod(m_titleLogo, (Uint8)alpha);
+
 		SDL_RenderTexture(m_renderer, m_titleLogo, nullptr, &logoRect);
 	}
 
-	float alpha = (sinf(m_titleTimer * 2.0f) + 1.0f) / 2.0f * 255.0f;
+}
 
-	SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
-	SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, (Uint8)alpha);
+void Game::renderGameOver() 
+{
+	SDL_SetRenderDrawColor(m_renderer, 10, 10, 30, 255);
+	SDL_RenderClear(m_renderer);
+	if (m_gameOverLogo)
+	{
+		float texW, texH;
+		SDL_GetTextureSize(m_gameOverLogo, &texW, &texH);
 
-	SDL_FRect textRect = { 300, 400, 200, 30 };
-	SDL_RenderFillRect(m_renderer, &textRect);
+		float scale = 400.0f / texW;
+		float drawW = texW * scale;
+		float drawH = texH * scale;
+
+		SDL_FRect logoRect = {
+			(m_width - drawW) / 2.0f,  
+			100.0f,                    
+			drawW,
+			drawH
+		};
+
+		SDL_RenderTexture(m_renderer, m_gameOverLogo, nullptr, &logoRect);
+
+		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+		// 仮
+		SDL_FRect rKeyRect = { m_width / 2.0f - 150, m_height / 2.0f + 20, 300, 20 };
+		SDL_RenderFillRect(m_renderer, &rKeyRect);
+		// 仮
+		SDL_FRect tKeyRect = { m_width / 2.0f - 150, m_height / 2.0f + 50, 300, 20 };
+		SDL_RenderFillRect(m_renderer, &tKeyRect);
+	}
 }

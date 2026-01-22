@@ -23,7 +23,8 @@ enum class GameStatus {
 	Title,
 	Playing,
 	BossBattle,
-	Clear
+	Clear,
+	GameOver
 };
 
 class Game
@@ -83,8 +84,14 @@ private:
 	SDL_Texture* m_titleLogo = nullptr;
 	float m_titleTimer = 0.0f;
 
-	void loadTitleAssets();
+	SDL_Texture* m_gameOverLogo = nullptr;
+
+	void loadTextAssets();
 	void renderTitle();
+	void renderGameOver();
 	void renderClear();
+
+	void resetGame();
+
 };
 
