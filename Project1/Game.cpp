@@ -13,7 +13,7 @@ bool Game::init(const string& title, int width, int height)
 	m_height = height;
 
 	// SDL のビデオサブシステムを初期化
-	if (!SDL_Init(SDL_INIT_VIDEO)) 
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 	{
 		return false;
 	}
@@ -54,6 +54,28 @@ bool Game::init(const string& title, int width, int height)
 	SDL_Texture* bulletTex = IMG_LoadTexture(m_renderer, "assets/bullet.png");
 	loadConfig("PlayerParams.csv");
 	loadMap("map.txt");
+
+ 	if (!MIX_Init()) {
+		SDL_Log("MIX_Init Failed: %s", SDL_GetError());
+		return false;
+	}
+ 
+	m_mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+	if (!m_mixer) return false;
+
+	m_jumpTrack = MIX_CreateTrack(m_mixer);
+	m_shootTrack = MIX_CreateTrack(m_mixer);
+
+	m_jumpAudio = MIX_LoadAudio(m_mixer, "assets/se_jump.mp3", false);
+	m_shootAudio = MIX_LoadAudio(m_mixer, "assets/se_shoot.mp3", false);
+
+	if (m_shootTrack) {
+		MIX_SetTrackGain(m_shootTrack, 0.3f);
+	}
+
+	if (m_jumpTrack) {
+		MIX_SetTrackGain(m_jumpTrack, 0.5f);
+	}
 
 	return true;
 }
@@ -227,6 +249,13 @@ void Game::update(float dt)
 		{
 			AimDir dir = m_player->getAimDir();
 
+			if (m_mixer && m_shootAudio && m_shootTrack) {
+				// トラックに音を割り当てる
+				MIX_SetTrackAudio(m_shootTrack, m_shootAudio);
+				// 再生する
+				MIX_PlayTrack(m_shootTrack, 0);
+			}
+
 			m_bullets.push_back(make_unique<Bullet>(
 				m_renderer,
 				spawnX, spawnY, bulletW, bulletH,
@@ -280,6 +309,14 @@ void Game::update(float dt)
 		erase_if(m_enemies, [](const std::unique_ptr<Enemy>& e) {
 			return e->isDead();
 			});
+
+		if (m_player->isJumpTriggered()) 
+		{
+			if (m_mixer && m_jumpAudio && m_jumpTrack) {
+				MIX_SetTrackAudio(m_jumpTrack, m_jumpAudio);
+				MIX_PlayTrack(m_jumpTrack, 0);
+			}
+		}
 	}
 	
 }
@@ -465,12 +502,24 @@ void Game::loadConfig(const string& filename)
 
 	while (getline(file, line))
 	{
+		if (line.empty()) continue;
+
 		size_t commaPos = line.find(',');
 		if (commaPos == string::npos) continue;
 
 		string name = line.substr(0, commaPos);
 		string valueStr = line.substr(commaPos + 1);
 
+		auto trim = [](string& s) {
+			s.erase(0, s.find_first_not_of(" \t\r\n\xEF\xBB\xBF"));
+			s.erase(s.find_last_not_of(" \t\r\n") + 1);
+			};
+		trim(name);
+		trim(valueStr);
+
+		if (name == "パラメータ名" || name == "値" || valueStr.empty()) {
+			continue;
+		}
 		try
 		{
 			float value = stof(valueStr);
@@ -486,8 +535,8 @@ void Game::loadConfig(const string& filename)
 			else if (name == "jumpBufferMax") params.jumpBufferMax = value;
 			else if (name == "m_hp") params.m_hp = static_cast<int>(value);
 		}
-		catch (...) {
-			// 数字に変換できない行（ヘッダーや空行）は無視する
+		catch (const std::exception& e) {
+			SDL_Log("Skipping invalid config line: %s (%s)", line.c_str(), e.what());
 			continue;
 		}
 	}

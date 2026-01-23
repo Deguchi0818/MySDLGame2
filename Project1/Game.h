@@ -1,11 +1,13 @@
 #pragma once
 
 #include<SDL3/SDL.h>
+#include <SDL3_mixer/SDL_mixer.h>
 #include<iostream>
 #include<string>
 #include<vector>
 #include<fstream>
 #include <cstdlib>
+
 
 #include "Player.h"
 #include "Enemy.h"
@@ -85,6 +87,14 @@ private:
 	float m_titleTimer = 0.0f;
 
 	SDL_Texture* m_gameOverLogo = nullptr;
+
+	MIX_Mixer* m_mixer = nullptr;
+
+	MIX_Audio* m_jumpAudio = nullptr;
+	MIX_Audio* m_shootAudio = nullptr;
+
+	MIX_Track* m_jumpTrack = nullptr;
+	MIX_Track* m_shootTrack = nullptr;
 
 	void loadTextAssets();
 	void renderTitle();
