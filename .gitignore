@@ -1,2 +1,23 @@
 .vs/Project1/
 Project1/.vs/
+# Visual Studio テンポラリファイル
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ビルド出力
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.exe
+
+# ログファイル
+*.log
+*.tlog
