@@ -188,10 +188,10 @@ void Player::changeState(std::unique_ptr<PlayerState> newState) {
 }
 
 // ダメージを受けた時の処理
-void Player::takeDamage(int damage)
+bool Player::takeDamage(int damage)
 {
 	// 無敵時間中はダメージ処理をスキップ
-	if (m_invincibleTimer > 0) return;
+	if (m_invincibleTimer > 0) return false;
 
 	m_currentHp -= damage;
 	if (m_currentHp < 0)
@@ -200,6 +200,8 @@ void Player::takeDamage(int damage)
 	}
 
 	m_invincibleTimer = INVINCIBLE_TIME;
+
+	return true;
 }
 
 void Player::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset)

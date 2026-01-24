@@ -65,17 +65,22 @@ bool Game::init(const string& title, int width, int height)
 
 	m_jumpTrack = MIX_CreateTrack(m_mixer);
 	m_shootTrack = MIX_CreateTrack(m_mixer);
+	m_damageTrack = MIX_CreateTrack(m_mixer);
 
 	m_jumpAudio = MIX_LoadAudio(m_mixer, "assets/se_jump.mp3", false);
 	m_shootAudio = MIX_LoadAudio(m_mixer, "assets/se_shoot.mp3", false);
+	m_damageAudio = MIX_LoadAudio(m_mixer, "assets/se_damage.mp3", false);
 
 	if (m_shootTrack) {
 		MIX_SetTrackGain(m_shootTrack, 0.3f);
 	}
-
 	if (m_jumpTrack) {
 		MIX_SetTrackGain(m_jumpTrack, 0.5f);
 	}
+	if (m_damageTrack) {
+		MIX_SetTrackGain(m_damageTrack, 0.5f);
+	}
+
 
 	return true;
 }
@@ -205,7 +210,7 @@ void Game::update(float dt)
 				{
 					if (m_player->getInvincibleTimer() <= 0) 
 					{
-						m_player->takeDamage(10);
+						//m_player->takeDamage(10);
 
 						float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
 						float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
@@ -216,10 +221,41 @@ void Game::update(float dt)
 
 						enemy->applyKnockback(direction * -500.0f, -400.0f);
 						m_player->applyKnockback(direction * 500.0f, -400.0f);
+
+						
+					}
+
+					if (m_player->takeDamage(10))
+					{
+						if (m_mixer && m_damageAudio && m_damageTrack) {
+							// トラックに音を割り当てる
+							MIX_SetTrackAudio(m_damageTrack, m_damageAudio);
+							// 再生する
+							MIX_PlayTrack(m_damageTrack, 0);
+						}
+					}
+				}
+
+				for (auto& b : enemy->getBullets())
+				{
+					if (b->isActive() && b->collider().intersect(m_player->collider()))
+					{
+						if (m_player->takeDamage(5))
+						{
+							if (m_mixer && m_damageAudio && m_damageTrack) {
+								// トラックに音を割り当てる
+								MIX_SetTrackAudio(m_damageTrack, m_damageAudio);
+								// 再生する
+								MIX_PlayTrack(m_damageTrack, 0);
+							}
+						}
+						b->deleteBullet();
 					}
 				}
 			}
 		}
+
+
 
 		float playerCenterX = pRect.x + pRect.w / 2.0f;
 		float playerCenterY = pRect.y + pRect.h / 2.0f;
@@ -558,6 +594,8 @@ void Game::loadTextAssets()
 {
 	m_titleLogo = IMG_LoadTexture(m_renderer, "assets/title.png");
 	m_gameOverLogo = IMG_LoadTexture(m_renderer, "assets/gameover.png");
+	m_retryText = IMG_LoadTexture(m_renderer, "assets/retry_text.png");
+	m_titleReturnText = IMG_LoadTexture(m_renderer, "assets/return_title_text.png");
 }
 
 void Game::renderTitle() 
@@ -591,7 +629,7 @@ void Game::renderTitle()
 
 }
 
-void Game::renderGameOver() 
+void Game::renderGameOver()
 {
 	SDL_SetRenderDrawColor(m_renderer, 10, 10, 30, 255);
 	SDL_RenderClear(m_renderer);
@@ -605,8 +643,8 @@ void Game::renderGameOver()
 		float drawH = texH * scale;
 
 		SDL_FRect logoRect = {
-			(m_width - drawW) / 2.0f,  
-			100.0f,                    
+			(m_width - drawW) / 2.0f,
+			100.0f,
 			drawW,
 			drawH
 		};
@@ -614,11 +652,25 @@ void Game::renderGameOver()
 		SDL_RenderTexture(m_renderer, m_gameOverLogo, nullptr, &logoRect);
 
 		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
-		// 仮
-		SDL_FRect rKeyRect = { m_width / 2.0f - 150, m_height / 2.0f + 20, 300, 20 };
-		SDL_RenderFillRect(m_renderer, &rKeyRect);
-		// 仮
-		SDL_FRect tKeyRect = { m_width / 2.0f - 150, m_height / 2.0f + 50, 300, 20 };
-		SDL_RenderFillRect(m_renderer, &tKeyRect);
+
 	}
+
+	if (m_retryText) {
+		float texW, texH;
+		SDL_GetTextureSize(m_retryText, &texW, &texH);
+		SDL_FRect dest = { m_width / 2.0f - texW / 2.0f, m_height / 2.0f + 50, texW, texH };
+
+		SDL_RenderTexture(m_renderer, m_retryText, nullptr, &dest);
+	}
+
+	if (m_titleReturnText)
+	{
+		float texW, texH;
+		SDL_GetTextureSize(m_titleReturnText, &texW, &texH);
+		SDL_FRect dest = { m_width / 2.0f - texW / 2.0f, m_height / 2.0f + 100, texW, texH };
+
+		SDL_RenderTexture(m_renderer, m_titleReturnText, nullptr, &dest);
+
+	}
+
 }

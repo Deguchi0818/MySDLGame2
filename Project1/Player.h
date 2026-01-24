@@ -94,7 +94,7 @@ public:
 	const PlayerParams& getParams() const { return m_params; }
 
 	// ƒ_ƒ[ƒW‚ğó‚¯‚½‚Ìˆ—
-	void takeDamage(int damage);
+	bool takeDamage(int damage);
 
 private:
 	BoxCollider m_collider;

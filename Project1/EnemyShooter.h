@@ -13,9 +13,11 @@ public:
     void render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset) override;
     void shoot(const SDL_FRect& playerRect);
 
-	void checkPlayerCollision(Player& player) override;
-
     void setBulletTexture(SDL_Texture* tex) { m_bulletTexture = tex; }
+
+    std::vector<std::unique_ptr<Bullet>>& getBullets() override {
+        return m_bullets;
+    }
 
 private:
     float m_shootTimer = 0.0f;

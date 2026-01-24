@@ -1,6 +1,7 @@
 #pragma once
 #include "Collider.h"
 #include "Player.h"
+#include "Bullet.h"
 #include <SDL3/SDL.h>
 #include<iostream>
 #include<vector>
@@ -87,6 +88,11 @@ public:
 	}
 
 	virtual void checkPlayerCollision(Player& player) {}
+
+	virtual vector<unique_ptr<Bullet>>& getBullets() {
+		static vector<unique_ptr<Bullet>> empty;
+		return empty;
+	}
 
 protected:
 	BoxCollider m_collider;

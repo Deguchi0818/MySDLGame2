@@ -36,15 +36,3 @@ void  EnemyShooter::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffse
 	EnemyWalking::render(renderer, cameraOffset); // “G–{‘Ì‚Ì•`‰æ
 	for (auto& b : m_bullets) b->render(renderer, cameraOffset); // ’e‚Ì•`‰æ
 }
-
-void EnemyShooter::checkPlayerCollision(Player& player)
-{
-	for (auto& b : m_bullets)
-	{
-		if (b->isActive() && b->collider().intersect(player.collider()))
-		{
-			player.takeDamage(5);
-			b->deleteBullet();
-		}
-	}
-}
