@@ -15,14 +15,14 @@ public:
 
     void setBulletTexture(SDL_Texture* tex) { m_bulletTexture = tex; }
 
-    std::vector<std::unique_ptr<Bullet>>& getBullets() override {
+    std::vector<unique_ptr<Bullet>>& getBullets() override {
         return m_bullets;
     }
 
 private:
     float m_shootTimer = 0.0f;
     float m_shootInterval = 2.0f; // 2•b‚É1‰ñ
-    std::vector<std::unique_ptr<Bullet>> m_bullets;
+    std::vector<unique_ptr<Bullet>> m_bullets;
 
     SDL_Texture* m_bulletTexture = nullptr;
 };
