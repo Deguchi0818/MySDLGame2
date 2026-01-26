@@ -12,12 +12,14 @@ public:
         :m_renderer(renderer), m_mixer(mixer) {};
 	~ResourceManager() { cleanup(); }
 
-    SDL_Texture* getTexture(const std::string& path) {
+    SDL_Texture* getTexture(const std::string& path) 
+    {
         auto it = m_textures.find(path);
         if (it != m_textures.end()) {
             return it->second;
         }
 
+        // 最初のロード、連想配列への登録
         SDL_Texture* texture = IMG_LoadTexture(m_renderer, path.c_str());
         if (!texture) {
             return nullptr;
@@ -34,6 +36,7 @@ public:
             return it->second;
         }
 
+        // 最初のロード、連想配列への登録
         MIX_Audio* audio = MIX_LoadAudio(m_mixer, path.c_str(), false);
         if (!audio) {
             return nullptr;
@@ -44,8 +47,10 @@ public:
 
     }
 
-    void cleanup() {
-        for (auto& pair : m_textures) {
+    void cleanup() 
+    {
+        for (auto& pair : m_textures) 
+        {
             SDL_DestroyTexture(pair.second);
         }
         m_textures.clear();
@@ -57,6 +62,8 @@ public:
 private:
 	SDL_Renderer* m_renderer;
     MIX_Mixer* m_mixer;
+
+    // 連想配列
 	std::unordered_map<std::string, SDL_Texture*> m_textures;
     std::unordered_map<std::string, MIX_Audio*> m_audios;
 };
