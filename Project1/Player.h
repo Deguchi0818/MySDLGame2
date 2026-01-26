@@ -36,7 +36,7 @@ class Player
 public:
 	Player(SDL_Renderer* renderer,
 		float x, float y, float w, float h,
-		const char* texturtPath);
+		SDL_Texture* texture);
 
 	~Player();
 

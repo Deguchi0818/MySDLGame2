@@ -3,14 +3,9 @@
 
 Player::Player(SDL_Renderer* renderer,
 	float x, float y, float w, float h,
-	const char* texturePath)
-	:m_collider(x, y, w, h) 
+	SDL_Texture* texture)
+	:m_collider(x, y, w, h), m_texture(texture)
 {
-	// 画像（テクスチャ）の読み込みと初期状態の設定
-	m_texture = IMG_LoadTexture(renderer, texturePath);
-	if (!m_texture) {
-		SDL_Log("IMG_LoadTexture failed: %s", SDL_GetError());
-	}
 	changeState(make_unique<IdleState>());
 }
 Player::~Player() 
@@ -18,7 +13,6 @@ Player::~Player()
 	// プレイヤー破棄時にテクスチャメモリを解放
 	if (m_texture)
 	{
-		SDL_DestroyTexture(m_texture);
 		m_texture = nullptr;
 	}
 }

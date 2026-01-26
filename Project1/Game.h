@@ -18,6 +18,7 @@
 #include "Collider.h"
 #include "Bullet.h"
 #include "Door.h"
+#include "ResourceManager.h"
 
 using namespace std;
 
@@ -92,13 +93,6 @@ private:
 
 	MIX_Mixer* m_mixer = nullptr;
 
-	MIX_Audio* m_jumpAudio = nullptr;
-	MIX_Audio* m_shootAudio = nullptr;
-	MIX_Audio* m_damageAudio = nullptr;
-
-	MIX_Track* m_jumpTrack = nullptr;
-	MIX_Track* m_shootTrack = nullptr;
-	MIX_Track* m_damageTrack = nullptr;
 
 	void loadTextAssets();
 	void renderTitle();
@@ -106,6 +100,9 @@ private:
 	void renderClear();
 
 	void resetGame();
+
+	unique_ptr<ResourceManager> m_resourceManager;
+	void playSE(const std::string& path);
 
 };
 

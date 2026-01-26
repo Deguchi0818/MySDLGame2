@@ -35,53 +35,41 @@ bool Game::init(const string& title, int width, int height)
 		return false;
 	}
 
-	loadTextAssets();
+	if (!MIX_Init()) {
+		SDL_Log("MIX_Init Failed: %s", SDL_GetError());
+		return false;
+	}
 
-	m_camera.w = static_cast<float>(m_width);
-	m_camera.h = static_cast<float>(m_height);
+	m_resourceManager = make_unique<ResourceManager>(m_renderer, m_mixer);
+
+	loadTextAssets();
+	m_bulletTexture = m_resourceManager->getTexture("assets/bullet.png");
 
 	// playerの作成
 	m_player = make_unique <Player>(
 		m_renderer,
 		0.0f, 0.0f,		// 位置
 		64.0f, 64.0f,	// 表示サイズ
-		"assets/player.png"
+		m_resourceManager->getTexture("assets/player.png")
 	);
 
-	m_isRunning = true;
-
-	m_bulletTexture = IMG_LoadTexture(m_renderer, "assets/bullet.png");
-	SDL_Texture* bulletTex = IMG_LoadTexture(m_renderer, "assets/bullet.png");
-	loadConfig("PlayerParams.csv");
-	loadMap("map.txt");
-
- 	if (!MIX_Init()) {
-		SDL_Log("MIX_Init Failed: %s", SDL_GetError());
-		return false;
-	}
- 
 	m_mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
 	if (!m_mixer) return false;
 
-	m_jumpTrack = MIX_CreateTrack(m_mixer);
-	m_shootTrack = MIX_CreateTrack(m_mixer);
-	m_damageTrack = MIX_CreateTrack(m_mixer);
+	m_camera.w = static_cast<float>(m_width);
+	m_camera.h = static_cast<float>(m_height);
 
-	m_jumpAudio = MIX_LoadAudio(m_mixer, "assets/se_jump.mp3", false);
-	m_shootAudio = MIX_LoadAudio(m_mixer, "assets/se_shoot.mp3", false);
-	m_damageAudio = MIX_LoadAudio(m_mixer, "assets/se_damage.mp3", false);
+	m_isRunning = true;
 
-	if (m_shootTrack) {
-		MIX_SetTrackGain(m_shootTrack, 0.3f);
-	}
-	if (m_jumpTrack) {
-		MIX_SetTrackGain(m_jumpTrack, 0.5f);
-	}
-	if (m_damageTrack) {
-		MIX_SetTrackGain(m_damageTrack, 0.5f);
-	}
+	
+	loadConfig("PlayerParams.csv");
+	loadMap("map.txt");	
 
+	m_resourceManager->getAudio("assets/se_jump.mp3");
+	m_resourceManager->getAudio("assets/se_shoot.mp3");
+	m_resourceManager->getAudio("assets/se_damage.mp3");
 
+	MIX_SetMixerGain(m_mixer, 0.4f);
 	return true;
 }
 
@@ -227,12 +215,7 @@ void Game::update(float dt)
 
 					if (m_player->takeDamage(10))
 					{
-						if (m_mixer && m_damageAudio && m_damageTrack) {
-							// トラックに音を割り当てる
-							MIX_SetTrackAudio(m_damageTrack, m_damageAudio);
-							// 再生する
-							MIX_PlayTrack(m_damageTrack, 0);
-						}
+						playSE("assets/se_damage.mp3");
 					}
 				}
 
@@ -242,12 +225,7 @@ void Game::update(float dt)
 					{
 						if (m_player->takeDamage(5))
 						{
-							if (m_mixer && m_damageAudio && m_damageTrack) {
-								// トラックに音を割り当てる
-								MIX_SetTrackAudio(m_damageTrack, m_damageAudio);
-								// 再生する
-								MIX_PlayTrack(m_damageTrack, 0);
-							}
+							playSE("assets/se_damage.mp3");
 						}
 						b->deleteBullet();
 					}
@@ -285,12 +263,7 @@ void Game::update(float dt)
 		{
 			AimDir dir = m_player->getAimDir();
 
-			if (m_mixer && m_shootAudio && m_shootTrack) {
-				// トラックに音を割り当てる
-				MIX_SetTrackAudio(m_shootTrack, m_shootAudio);
-				// 再生する
-				MIX_PlayTrack(m_shootTrack, 0);
-			}
+			playSE("assets/se_shoot.mp3");
 
 			m_bullets.push_back(make_unique<Bullet>(
 				m_renderer,
@@ -348,9 +321,8 @@ void Game::update(float dt)
 
 		if (m_player->isJumpTriggered()) 
 		{
-			if (m_mixer && m_jumpAudio && m_jumpTrack) {
-				MIX_SetTrackAudio(m_jumpTrack, m_jumpAudio);
-				MIX_PlayTrack(m_jumpTrack, 0);
+			if (m_player->isJumpTriggered()) {
+				playSE("assets/se_jump.mp3");
 			}
 		}
 	}
@@ -592,10 +564,10 @@ void Game::resetGame()
 
 void Game::loadTextAssets()
 {
-	m_titleLogo = IMG_LoadTexture(m_renderer, "assets/title.png");
-	m_gameOverLogo = IMG_LoadTexture(m_renderer, "assets/gameover.png");
-	m_retryText = IMG_LoadTexture(m_renderer, "assets/retry_text.png");
-	m_titleReturnText = IMG_LoadTexture(m_renderer, "assets/return_title_text.png");
+	m_titleLogo = m_resourceManager->getTexture("assets/title.png");
+	m_gameOverLogo = m_resourceManager->getTexture("assets/gameover.png");
+	m_retryText = m_resourceManager->getTexture("assets/retry_text.png");
+	m_titleReturnText = m_resourceManager->getTexture("assets/return_title_text.png");
 }
 
 void Game::renderTitle() 
@@ -673,4 +645,12 @@ void Game::renderGameOver()
 
 	}
 
+}
+
+void Game::playSE(const std::string& path) {
+	if (!m_mixer || !m_resourceManager) return;
+	MIX_Audio* audio = m_resourceManager->getAudio(path);
+	if (audio) {
+		MIX_PlayAudio(m_mixer, audio);
+	}
 }
