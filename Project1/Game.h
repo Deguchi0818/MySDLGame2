@@ -19,8 +19,8 @@
 #include "Bullet.h"
 #include "Door.h"
 #include "ResourceManager.h"
+#include "Goal.h"
 
-using namespace std;
 
 enum class GameStatus {
 	Title,
@@ -60,12 +60,13 @@ private:
 	SDL_Window* m_window{ nullptr };
 	SDL_Renderer* m_renderer{ nullptr };
 
-	unique_ptr<Player> m_player;
-	vector < unique_ptr<Enemy>> m_enemies;
-	vector<unique_ptr<Bullet>> m_bullets;
-	vector<unique_ptr<Door>> m_doors;
+	std::unique_ptr<Player> m_player;
+	std::vector < unique_ptr<Enemy>> m_enemies;
+	std::vector<unique_ptr<Bullet>> m_bullets;
+	std::vector<unique_ptr<Door>> m_doors;
+	std::unique_ptr<Goal> m_goal;
 
-	vector<BoxCollider> m_grounds;
+	std::vector<BoxCollider> m_grounds;
 
 	int m_width{ 0 };
 	int m_height{ 0 };
@@ -90,6 +91,7 @@ private:
 	SDL_Texture* m_gameOverLogo = nullptr;
 	SDL_Texture* m_retryText = nullptr;
 	SDL_Texture* m_titleReturnText = nullptr;
+	SDL_Texture* m_clearLogo = nullptr;
 
 	MIX_Mixer* m_mixer = nullptr;
 
@@ -99,7 +101,6 @@ private:
 	void renderGameOver();
 	void renderClear();
 
-	void updatePlaying(float dt);      // プレイ中の更新メイン
 	void updateEntities(float dt);     // プレイヤー、敵、弾などの挙動更新
 	void checkCollisions();            // あらゆる当たり判定の解決
 	void spawnBullets();               // 弾の発射処理
@@ -111,5 +112,6 @@ private:
 	unique_ptr<ResourceManager> m_resourceManager;
 	void playSE(const std::string& path);
 
+	float m_shakeTimer = 0.0f;
 };
 

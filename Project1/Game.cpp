@@ -2,6 +2,7 @@
 
 #include <SDL3_image/SDL_image.h>
 
+using namespace std;
 Game::~Game()
 {
 	cleanup();
@@ -39,6 +40,8 @@ bool Game::init(const string& title, int width, int height)
 		SDL_Log("MIX_Init Failed: %s", SDL_GetError());
 		return false;
 	}
+	m_mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+	if (!m_mixer) return false;
 
 	m_resourceManager = make_unique<ResourceManager>(m_renderer, m_mixer);
 
@@ -52,9 +55,6 @@ bool Game::init(const string& title, int width, int height)
 		64.0f, 64.0f,	// 表示サイズ
 		m_resourceManager->getTexture("assets/player.png")
 	);
-
-	m_mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
-	if (!m_mixer) return false;
 
 	m_camera.w = static_cast<float>(m_width);
 	m_camera.h = static_cast<float>(m_height);
@@ -132,6 +132,8 @@ void Game::processEvents()
 			else if (m_status == GameStatus::Clear) {
 				if (event.key.key == SDLK_T) {
 					m_status = GameStatus::Title;
+
+					resetGame();
 				}
 			}
 			else if (event.key.key == SDLK_ESCAPE) {
@@ -156,21 +158,20 @@ void Game::update(float dt)
 
 	if (m_status == GameStatus::Playing || m_status == GameStatus::BossBattle) 
 	{
-		updatePlaying(dt);
-	}
-}
+		if (m_shakeTimer > 0) {
+			m_shakeTimer -= dt;
+		}
 
-void Game::updatePlaying(float dt)
-{
-	updateEntities(dt);  // 動かす
-	checkCollisions();   // 当たっているか調べる
-	spawnBullets();      // 新しく生成する
-	cleanupEntities();   // 不要なものを消す
-	updateCamera();      // カメラを合わせる
+		updateEntities(dt);  // 動かす
+		checkCollisions();   // 当たっているか調べる
+		spawnBullets();      // 新しく生成する
+		cleanupEntities();   // 不要なものを消す
+		updateCamera();      // カメラを合わせる
 
-	// ゲームオーバー判定
-	if (m_player->getCurrentHp() <= 0) {
-		m_status = GameStatus::GameOver;
+		// ゲームオーバー判定
+		if (m_player->getCurrentHp() <= 0) {
+			m_status = GameStatus::GameOver;
+		}
 	}
 }
 
@@ -251,6 +252,7 @@ void Game::checkCollisions()
 				if (m_player->takeDamage(10))
 				{
 					playSE("assets/se_damage.mp3");
+					m_shakeTimer = 0.3f;
 				}
 			}
 
@@ -261,11 +263,18 @@ void Game::checkCollisions()
 					if (m_player->takeDamage(5))
 					{
 						playSE("assets/se_damage.mp3");
+						m_shakeTimer = 0.3f;
 					}
 					b->deleteBullet();
 				}
 			}
 		}
+	}
+
+	if (m_goal && m_player->collider().intersect(m_goal->collider()))
+	{
+		m_status = GameStatus::Clear;
+		playSE("assets/se_clear");
 	}
 
 }
@@ -353,11 +362,20 @@ void Game::updateCamera()
 {
 	SDL_FRect pRect = m_player->collider().rect();
 
+
 	float playerCenterX = pRect.x + pRect.w / 2.0f;
 	float playerCenterY = pRect.y + pRect.h / 2.0f;
 	// カメラをプレイヤーの中心に合わせる
 	m_camera.x = playerCenterX - m_camera.w / 2.0f;
 	m_camera.y = playerCenterY - m_camera.h / 2.0f;
+
+	// 画面を揺らす
+	//if (m_shakeTimer > 0)
+	//{
+	//	m_camera.x += (static_cast<float>(rand() % 17) - 8.0f);
+	//	m_camera.y += (static_cast<float>(rand() % 17) - 8.0f);
+	//}
+
 	// カメラの範囲制限
 	if (m_camera.x < 0)
 	{
@@ -392,8 +410,9 @@ void Game::render()
 	}
 	else if (m_status == GameStatus::Clear) {
 		// クリア画面の描画
-		SDL_SetRenderDrawColor(m_renderer, 100, 0, 0, 255);
+		SDL_SetRenderDrawColor(m_renderer, 0, 100, 0, 255);
 		SDL_RenderClear(m_renderer);
+		renderClear();
 	}
 	else 
 	{
@@ -405,7 +424,9 @@ void Game::render()
 		for (auto& enemy : m_enemies) {
 			enemy->render(m_renderer, { m_camera.x, m_camera.y });
 		}
-
+		if (m_goal) {
+			m_goal->render(m_renderer, { m_camera.x, m_camera.y });
+		}
 
 		SDL_SetRenderDrawColor(m_renderer, 100, 50, 0, 255);
 		for (auto& g : m_grounds)
@@ -540,6 +561,11 @@ void Game::loadMap(const string& filename)
 			else if (tile == 'D') {
 				m_doors.push_back(make_unique<Door>(x, y, (float)TILE_SIZE, (float)TILE_SIZE * 2, DoorColor::Blue));
 			}
+			else if(tile == 'G')
+			{
+				m_goal = make_unique<Goal>(x, y, (float)TILE_SIZE, (float)TILE_SIZE,
+					m_resourceManager->getTexture("assets/goal.png"));
+			}
 		}
 
 		int lineWidth = line.length() * TILE_SIZE;
@@ -623,6 +649,7 @@ void Game::loadTextAssets()
 	m_gameOverLogo = m_resourceManager->getTexture("assets/gameover.png");
 	m_retryText = m_resourceManager->getTexture("assets/retry_text.png");
 	m_titleReturnText = m_resourceManager->getTexture("assets/return_title_text.png");
+	m_clearLogo = m_resourceManager->getTexture("assets/gameclear.png");
 }
 
 void Game::renderTitle() 
@@ -700,6 +727,44 @@ void Game::renderGameOver()
 
 	}
 
+}
+
+void Game::renderClear() 
+{
+
+	SDL_SetRenderDrawColor(m_renderer, 10, 10, 30, 255);
+	SDL_RenderClear(m_renderer);
+	if (m_clearLogo)
+	{
+		float texW, texH;
+		SDL_GetTextureSize(m_clearLogo, &texW, &texH);
+
+		float scale = 400.0f / texW;
+		float drawW = texW * scale;
+		float drawH = texH * scale;
+
+		SDL_FRect logoRect = {
+			(m_width - drawW) / 2.0f,
+			100.0f,
+			drawW,
+			drawH
+		};
+
+		SDL_RenderTexture(m_renderer, m_clearLogo, nullptr, &logoRect);
+
+		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+
+	}
+
+	if (m_titleReturnText)
+	{
+		float texW, texH;
+		SDL_GetTextureSize(m_titleReturnText, &texW, &texH);
+		SDL_FRect dest = { m_width / 2.0f - texW / 2.0f, m_height / 2.0f + 100, texW, texH };
+
+		SDL_RenderTexture(m_renderer, m_titleReturnText, nullptr, &dest);
+
+	}
 }
 
 void Game::playSE(const std::string& path) {

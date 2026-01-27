@@ -29,6 +29,7 @@
     <ClCompile Include="EnemyShooter.cpp" />
     <ClCompile Include="EnemyTimedPatrol.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="GroundedState.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="JumpState.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="EnemyShooter.h" />
     <ClInclude Include="EnemyTimedPatrol.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="GroundedState.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="JumpState.h" />
