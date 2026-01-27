@@ -158,9 +158,6 @@ void Game::update(float dt)
 	{
 		updatePlaying(dt);
 	}
-	
-	updateCamera();
-
 }
 
 void Game::updatePlaying(float dt)
@@ -270,51 +267,6 @@ void Game::checkCollisions()
 			}
 		}
 	}
-
-	for (auto& enemy : m_enemies)
-	{
-
-		enemy->checkPlayerCollision(*m_player);
-		// 敵との当たり判定ループ
-		if (!enemy->isDead())
-		{
-			if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
-			{
-				if (m_player->getInvincibleTimer() <= 0)
-				{
-					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
-					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
-
-
-					// 敵からみてplayerがどちらに向いているかの判定
-					float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
-
-					enemy->applyKnockback(direction * -500.0f, -400.0f);
-					m_player->applyKnockback(direction * 500.0f, -400.0f);
-
-
-				}
-
-				if (m_player->takeDamage(10))
-				{
-					playSE("assets/se_damage.mp3");
-				}
-			}
-
-			for (auto& b : enemy->getBullets())
-			{
-				if (b->isActive() && b->collider().intersect(m_player->collider()))
-				{
-					if (m_player->takeDamage(5))
-					{
-						playSE("assets/se_damage.mp3");
-					}
-					b->deleteBullet();
-				}
-			}
-		}
-	}
-
 
 }
 
