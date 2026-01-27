@@ -9,7 +9,7 @@ class EnemyShooter : public EnemyWalking
 public:
 	using EnemyWalking::EnemyWalking;
 
-    void update(float dt, const SDL_FRect& playerRect, const Player& player, const vector<BoxCollider>& grounds) override;
+    void update(float dt, const SDL_FRect& playerRect, const Player& player, const std::vector<BoxCollider>& grounds) override;
     void render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset) override;
     void shoot(const SDL_FRect& playerRect);
 

@@ -1,5 +1,5 @@
 #include "EnemyTimedPatrol.h"
-
+using namespace std;
 void EnemyTimedPatrol::update(float dt, const SDL_FRect& playerRect, const Player& player, const vector<BoxCollider>& grounds)
 {
 	EnemyWalking::update(dt, playerRect, player, grounds);

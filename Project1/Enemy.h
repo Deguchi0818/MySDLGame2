@@ -6,13 +6,12 @@
 #include<iostream>
 #include<vector>
 
-using namespace std;
 
 class Enemy
 {
 public:
-	Enemy(float x, float y, float w, float h)
-		: m_collider(x, y, w, h), m_isDead(false) 
+	Enemy(float x, float y, float w, float h, SDL_Texture* texture)
+		: m_collider(x, y, w, h), m_isDead(false), m_texture(texture)
 	{
 		speed = 100;
 	}
@@ -29,16 +28,22 @@ public:
 		drawRect.x -= cameraOffset.x;
 		drawRect.y -= cameraOffset.y;
 
-		if (m_flashTimer > 0) 
+		if (m_texture) 
 		{
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+			if (m_flashTimer > 0) {
+				SDL_SetTextureColorMod(m_texture, 255, 100, 100);
+			}
+			else {
+				SDL_SetTextureColorMod(m_texture, 255, 255, 255);
+			}
+			SDL_RenderTexture(renderer, m_texture, nullptr, &drawRect);
 		}
-		else
+		else 
 		{
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+			SDL_RenderFillRect(renderer, &drawRect);
 		}
-
-		SDL_RenderFillRect(renderer, &drawRect);
 	}
 
 	bool isDead() const { return m_isDead; }
@@ -96,6 +101,7 @@ public:
 
 protected:
 	BoxCollider m_collider;
+	SDL_Texture* m_texture;
 	bool m_isDead = false;
 	float m_velX = 0;
 	float m_velY = 0;

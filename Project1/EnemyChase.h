@@ -3,15 +3,15 @@
 
 
 enum class EnemyState {
-	PATOROL,
+	PATROL,
 	CHASE
 };
 
 class EnemyChase : public Enemy
 {
 public:
-	EnemyChase(float x, float y, float w, float h)
-		: Enemy(x, y, w, h)
+	EnemyChase(float x, float y, float w, float h, SDL_Texture* texture)
+		: Enemy(x, y, w, h, texture)
 	{
 		speed = 100.0f;       // スピード
 		m_detectRange = 400.0f;// 追いかける範囲 
@@ -23,7 +23,7 @@ public:
 
 
 private:
-	EnemyState m_currentState = EnemyState::PATOROL;
+	EnemyState m_currentState = EnemyState::PATROL;
 	float m_detectRange = 300.0f;
 
 };

@@ -1,7 +1,7 @@
 #include "EnemyChase.h"
 
-
-void EnemyChase::update(float dt, const SDL_FRect& playerRect, const Player& player, const vector<BoxCollider>& grounds)
+using namespace std;
+void EnemyChase::update(float dt, const SDL_FRect& playerRect, const Player& player, const std::vector<BoxCollider>& grounds)
 {
     updateFlashTimer(dt);
     handleStunState(dt); // スタンタイマーを減らす処理
@@ -17,12 +17,12 @@ void EnemyChase::update(float dt, const SDL_FRect& playerRect, const Player& pla
         }
         else
         {
-            m_currentState = EnemyState::PATOROL;
+            m_currentState = EnemyState::PATROL;
         }
 
         switch (m_currentState)
         {
-        case EnemyState::PATOROL:
+        case EnemyState::PATROL:
             patrol(dt);
             break;
         case EnemyState::CHASE:

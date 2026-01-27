@@ -469,18 +469,30 @@ void Game::loadMap(const string& filename)
 				}
 			}
 			else if (tile == 'E') {
-				m_enemies.push_back(make_unique<EnemyWalking>(x, y, 64.0f, 64.0f));
+				m_enemies.push_back(make_unique<EnemyWalking>(
+					x, y, 64.0f, 64.0f,
+					m_resourceManager->getTexture("assets/enemy.png")
+				));
 			}
 			else if (tile == 'C') {
-				m_enemies.push_back(make_unique<EnemyChase>(x, y, 64.0f, 64.0f));
+				m_enemies.push_back(make_unique<EnemyChase>(
+					x, y, 64.0f, 64.0f,
+					m_resourceManager->getTexture("assets/enemy.png")
+				));
 			}
 			else if (tile == 'S') {
-				auto shooter = make_unique<EnemyShooter>(x, y, 64.0f, 64.0f);
+				auto shooter = make_unique<EnemyShooter>(
+					x, y, 64.0f, 64.0f,
+					m_resourceManager->getTexture("assets/enemy_shooter.png")
+				);
 				shooter->setBulletTexture(m_bulletTexture);
 				m_enemies.push_back(std::move(shooter));
 			}
 			else if (tile == 'T') {
-				m_enemies.push_back(make_unique<EnemyTimedPatrol>(x, y, 64.0f, 64.0f));
+				m_enemies.push_back(make_unique<EnemyTimedPatrol>(
+					x, y, 64.0f, 64.0f,
+					m_resourceManager->getTexture("assets/enemy.png")
+				));
 			}
 			else if (tile == 'D') {
 				m_doors.push_back(make_unique<Door>(x, y, (float)TILE_SIZE, (float)TILE_SIZE * 2, DoorColor::Blue));
