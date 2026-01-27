@@ -156,178 +156,269 @@ void Game::update(float dt)
 
 	if (m_status == GameStatus::Playing || m_status == GameStatus::BossBattle) 
 	{
-		bool onGround = BoxCollider::resolveCollision(m_player->collider(), m_player->velX, m_player->velY, m_grounds);
-		m_player->setOnGround(onGround);
+		updatePlaying(dt);
+	}
+	
+	updateCamera();
 
-		m_player->update(dt, m_levelWidth, m_levelHeight);
+}
 
-		for (auto& door : m_doors) {
-			// ドアの更新（アニメーションなど）
-			door->update(dt);
+void Game::updatePlaying(float dt)
+{
+	updateEntities(dt);  // 動かす
+	checkCollisions();   // 当たっているか調べる
+	spawnBullets();      // 新しく生成する
+	cleanupEntities();   // 不要なものを消す
+	updateCamera();      // カメラを合わせる
 
-			// プレイヤーとの当たり判定
-			if (m_player->collider().intersect(door->collider())) {
+	// ゲームオーバー判定
+	if (m_player->getCurrentHp() <= 0) {
+		m_status = GameStatus::GameOver;
+	}
+}
 
-				// 3. もしドアが完全に開いていなければ、壁として押し戻す
-				if (!door->isOpen()) {
-					float vx = m_player->velX;
-					float vy = m_player->velY;
+void Game::updateEntities(float dt)
+{
 
-					// 既存の衝突解決メソッドを利用して、ドアを壁として扱う
-					vector<BoxCollider> tempDoorVec = { door->collider() };
-					BoxCollider::resolveCollision(m_player->collider(), vx, vy, tempDoorVec);
+	m_player->update(dt, m_levelWidth, m_levelHeight);
 
-					m_player->velX = vx;
-					m_player->velY = vy;
-				}
-			}
-		}
+	for (auto& enemy : m_enemies)
+	{
+	
+		enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
+	}
 
-		// プレイヤーの中心座標を計算
-		SDL_FRect pRect = m_player->collider().rect();
+	for (auto& bullet : m_bullets)
+	{
+		bullet->update(dt, m_grounds);
+	}
 
+	for (auto& door : m_doors)
+	{
+		door->update(dt);
+	}
+}
 
-		for (auto& enemy : m_enemies) {
-			enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
+void Game::checkCollisions() 
+{
+	bool onGround = BoxCollider::resolveCollision(m_player->collider(), m_player->velX, m_player->velY, m_grounds);
+	m_player->setOnGround(onGround);
 
-			enemy->checkPlayerCollision(*m_player);
-			// 敵との当たり判定ループ
-			if (!enemy->isDead())
-			{
-				if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
-				{
-					if (m_player->getInvincibleTimer() <= 0) 
-					{
-						//m_player->takeDamage(10);
+	for (auto& door : m_doors)
+	{
+		// ドアの更新（アニメーションなど）
 
-						float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
-						float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
+		// プレイヤーとの当たり判定
+		if (m_player->collider().intersect(door->collider())) {
 
+			// 3. もしドアが完全に開いていなければ、壁として押し戻す
+			if (!door->isOpen()) {
+				float vx = m_player->velX;
+				float vy = m_player->velY;
 
-						// 敵からみてplayerがどちらに向いているかの判定
-						float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
+				// 既存の衝突解決メソッドを利用して、ドアを壁として扱う
+				vector<BoxCollider> tempDoorVec = { door->collider() };
+				BoxCollider::resolveCollision(m_player->collider(), vx, vy, tempDoorVec);
 
-						enemy->applyKnockback(direction * -500.0f, -400.0f);
-						m_player->applyKnockback(direction * 500.0f, -400.0f);
-
-						
-					}
-
-					if (m_player->takeDamage(10))
-					{
-						playSE("assets/se_damage.mp3");
-					}
-				}
-
-				for (auto& b : enemy->getBullets())
-				{
-					if (b->isActive() && b->collider().intersect(m_player->collider()))
-					{
-						if (m_player->takeDamage(5))
-						{
-							playSE("assets/se_damage.mp3");
-						}
-						b->deleteBullet();
-					}
-				}
-			}
-		}
-
-
-
-		float playerCenterX = pRect.x + pRect.w / 2.0f;
-		float playerCenterY = pRect.y + pRect.h / 2.0f;
-		// カメラをプレイヤーの中心に合わせる
-		m_camera.x = playerCenterX - m_camera.w / 2.0f;
-		m_camera.y = playerCenterY - m_camera.h / 2.0f;
-		// カメラの範囲制限
-		if (m_camera.x < 0)
-		{
-			m_camera.x = 0;
-		}
-		if (m_camera.y < 0)
-		{
-			m_camera.y = 0;
-		}
-		if (m_camera.x > m_levelWidth - m_camera.w) m_camera.x = m_levelWidth - m_camera.w;
-		if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
-
-		float bulletW = 16.0f;
-		float bulletH = 16.0f;
-
-		float spawnX = (m_player->m_facingDir > 0) ? (pRect.x + pRect.w) : (pRect.x - bulletW);
-		float spawnY = playerCenterY - (bulletH / 2.0f);
-
-		// 弾の発射
-		if (m_player->wantsToShoot())
-		{
-			AimDir dir = m_player->getAimDir();
-
-			playSE("assets/se_shoot.mp3");
-
-			m_bullets.push_back(make_unique<Bullet>(
-				m_renderer,
-				spawnX, spawnY, bulletW, bulletH,
-				// 弾を撃つたびに IMG_LoadTextureを読んでいたが起動時にポインタで場所を指定することで一回の読み込みでよくなりかくつきが解消された
-				m_bulletTexture,
-				dir.vx, dir.vy
-			));
-
-			m_player->consumeShootFlag();
-		}
-
-		for (auto& bullet : m_bullets) {
-			bullet->update(dt, m_grounds);
-			// 消えている弾は無視
-			if (!bullet->isActive()) continue;
-
-			for (auto& enemy : m_enemies)
-			{
-				// 既に消えていいる敵を無視
-				if (enemy->isDead()) continue;
-
-				if (bullet->collider().intersect(enemy->collider()))
-				{
-					enemy->takeDamage();
-					bullet->deleteBullet();
-					break;
-				}
-			}
-
-			for (auto& door : m_doors)
-			{
-				if (!door->isOpen() && bullet->collider().intersect(door->collider())) {
-					door->onHit();
-					bullet->deleteBullet();
-					break;
-				}
-			}
-
-		}
-
-
-		if (m_player->getCurrentHp() <= 0)
-		{
-			m_status = GameStatus::GameOver;
-		}
-
-		erase_if(m_bullets, [](const std::unique_ptr<Bullet>& b) {
-			return !b->isActive();
-			});
-
-		erase_if(m_enemies, [](const std::unique_ptr<Enemy>& e) {
-			return e->isDead();
-			});
-
-		if (m_player->isJumpTriggered()) 
-		{
-			if (m_player->isJumpTriggered()) {
-				playSE("assets/se_jump.mp3");
+				m_player->velX = vx;
+				m_player->velY = vy;
 			}
 		}
 	}
-	
+
+	for (auto& enemy : m_enemies) 
+	{
+		enemy->checkPlayerCollision(*m_player);
+		// 敵との当たり判定ループ
+		if (!enemy->isDead())
+		{
+			if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
+			{
+				if (m_player->getInvincibleTimer() <= 0)
+				{
+					//m_player->takeDamage(10);
+
+					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
+					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
+
+
+					// 敵からみてplayerがどちらに向いているかの判定
+					float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
+
+					enemy->applyKnockback(direction * -500.0f, -400.0f);
+					m_player->applyKnockback(direction * 500.0f, -400.0f);
+
+
+				}
+
+				if (m_player->takeDamage(10))
+				{
+					playSE("assets/se_damage.mp3");
+				}
+			}
+
+			for (auto& b : enemy->getBullets())
+			{
+				if (b->isActive() && b->collider().intersect(m_player->collider()))
+				{
+					if (m_player->takeDamage(5))
+					{
+						playSE("assets/se_damage.mp3");
+					}
+					b->deleteBullet();
+				}
+			}
+		}
+	}
+
+	for (auto& enemy : m_enemies)
+	{
+
+		enemy->checkPlayerCollision(*m_player);
+		// 敵との当たり判定ループ
+		if (!enemy->isDead())
+		{
+			if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
+			{
+				if (m_player->getInvincibleTimer() <= 0)
+				{
+					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
+					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
+
+
+					// 敵からみてplayerがどちらに向いているかの判定
+					float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
+
+					enemy->applyKnockback(direction * -500.0f, -400.0f);
+					m_player->applyKnockback(direction * 500.0f, -400.0f);
+
+
+				}
+
+				if (m_player->takeDamage(10))
+				{
+					playSE("assets/se_damage.mp3");
+				}
+			}
+
+			for (auto& b : enemy->getBullets())
+			{
+				if (b->isActive() && b->collider().intersect(m_player->collider()))
+				{
+					if (m_player->takeDamage(5))
+					{
+						playSE("assets/se_damage.mp3");
+					}
+					b->deleteBullet();
+				}
+			}
+		}
+	}
+
+
 }
+
+void Game::spawnBullets() 
+{
+	// プレイヤーの中心座標を計算
+	SDL_FRect pRect = m_player->collider().rect();
+
+	float playerCenterX = pRect.x + pRect.w / 2.0f;
+	float playerCenterY = pRect.y + pRect.h / 2.0f;
+
+	float bulletW = 16.0f;
+	float bulletH = 16.0f;
+
+	float spawnX = (m_player->m_facingDir > 0) ? (pRect.x + pRect.w) : (pRect.x - bulletW);
+	float spawnY = playerCenterY - (bulletH / 2.0f);
+
+	// 弾の発射
+	if (m_player->wantsToShoot())
+	{
+		AimDir dir = m_player->getAimDir();
+
+		playSE("assets/se_shoot.mp3");
+
+		m_bullets.push_back(make_unique<Bullet>(
+			m_renderer,
+			spawnX, spawnY, bulletW, bulletH,
+			// 弾を撃つたびに IMG_LoadTextureを読んでいたが起動時にポインタで場所を指定することで一回の読み込みでよくなりかくつきが解消された
+			m_bulletTexture,
+			dir.vx, dir.vy
+		));
+
+		m_player->consumeShootFlag();
+	}
+
+	for (auto& bullet : m_bullets) {
+		// 消えている弾は無視
+		if (!bullet->isActive()) continue;
+
+		for (auto& enemy : m_enemies)
+		{
+			// 既に消えていいる敵を無視
+			if (enemy->isDead()) continue;
+
+			if (bullet->collider().intersect(enemy->collider()))
+			{
+				enemy->takeDamage();
+				bullet->deleteBullet();
+				break;
+			}
+		}
+
+		for (auto& door : m_doors)
+		{
+			if (!door->isOpen() && bullet->collider().intersect(door->collider())) {
+				door->onHit();
+				bullet->deleteBullet();
+				break;
+			}
+		}
+
+	}
+}
+
+void Game::cleanupEntities() 
+{
+	erase_if(m_bullets, [](const std::unique_ptr<Bullet>& b) {
+		return !b->isActive();
+		});
+
+	erase_if(m_enemies, [](const std::unique_ptr<Enemy>& e) {
+		return e->isDead();
+		});
+
+	if (m_player->isJumpTriggered())
+	{
+		if (m_player->isJumpTriggered()) {
+			playSE("assets/se_jump.mp3");
+		}
+	}
+}
+
+void Game::updateCamera() 
+{
+	SDL_FRect pRect = m_player->collider().rect();
+
+	float playerCenterX = pRect.x + pRect.w / 2.0f;
+	float playerCenterY = pRect.y + pRect.h / 2.0f;
+	// カメラをプレイヤーの中心に合わせる
+	m_camera.x = playerCenterX - m_camera.w / 2.0f;
+	m_camera.y = playerCenterY - m_camera.h / 2.0f;
+	// カメラの範囲制限
+	if (m_camera.x < 0)
+	{
+		m_camera.x = 0;
+	}
+	if (m_camera.y < 0)
+	{
+		m_camera.y = 0;
+	}
+	if (m_camera.x > m_levelWidth - m_camera.w) m_camera.x = m_levelWidth - m_camera.w;
+	if (m_camera.y > m_levelHeight - m_camera.h) m_camera.y = m_levelHeight - m_camera.h;
+}
+
 
 void Game::render()
 {

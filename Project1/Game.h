@@ -99,6 +99,13 @@ private:
 	void renderGameOver();
 	void renderClear();
 
+	void updatePlaying(float dt);      // プレイ中の更新メイン
+	void updateEntities(float dt);     // プレイヤー、敵、弾などの挙動更新
+	void checkCollisions();            // あらゆる当たり判定の解決
+	void spawnBullets();               // 弾の発射処理
+	void updateCamera();               // カメラ位置の計算
+	void cleanupEntities();            // 死んだ敵や消えた弾の削除
+
 	void resetGame();
 
 	unique_ptr<ResourceManager> m_resourceManager;
