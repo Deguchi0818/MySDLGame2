@@ -105,10 +105,9 @@ void Player::checkScreenBounds(float screenW, float screenH)
 		r.x = screenW - r.w;
 	}
 
-	if (r.y + r.h > screenH)
+	if (r.y < 0)
 	{
-		r.y = screenH - r.h;
-		velY = 0.0f;
+		r.y = 0;
 	}
 
 	m_collider.setPosition(r.x, r.y);

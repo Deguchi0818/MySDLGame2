@@ -1,4 +1,4 @@
-#include "Game.h"
+ï»¿#include "Game.h"
 
 #include <SDL3_image/SDL_image.h>
 
@@ -13,13 +13,13 @@ bool Game::init(const string& title, int width, int height)
 	m_width = width;
 	m_height = height;
 
-	// SDL ‚ÌƒrƒfƒIƒTƒuƒVƒXƒeƒ€‚ğ‰Šú‰»
+	// SDL ã®ãƒ“ãƒ‡ã‚ªã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ ã‚’åˆæœŸåŒ–
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 	{
 		return false;
 	}
 
-	// ƒEƒBƒ“ƒhƒE‚Ìì¬
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½œæˆ
 	m_window = SDL_CreateWindow(title.c_str(), m_width, m_height, SDL_WINDOW_RESIZABLE);
 	if (!m_window) 
 	{
@@ -27,7 +27,7 @@ bool Game::init(const string& title, int width, int height)
 		return false;
 	}
 
-	// ƒŒƒ“ƒ_ƒ‰[ì¬
+	// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ä½œæˆ
 	m_renderer = SDL_CreateRenderer(m_window, nullptr);
 	if (!m_renderer) 
 	{
@@ -48,11 +48,11 @@ bool Game::init(const string& title, int width, int height)
 	loadTextAssets();
 	m_bulletTexture = m_resourceManager->getTexture("assets/bullet.png");
 
-	// player‚Ìì¬
+	// playerã®ä½œæˆ
 	m_player = make_unique <Player>(
 		m_renderer,
-		0.0f, 0.0f,		// ˆÊ’u
-		64.0f, 64.0f,	// •\¦ƒTƒCƒY
+		0.0f, 0.0f,		// ä½ç½®
+		64.0f, 64.0f,	// è¡¨ç¤ºã‚µã‚¤ã‚º
 		m_resourceManager->getTexture("assets/player.png")
 	);
 
@@ -77,21 +77,21 @@ void Game::run()
 {
 	static Uint64 prev = SDL_GetTicksNS();
 
-	// ƒƒCƒ“ƒ‹[ƒv
+	// ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—
 	while (m_isRunning)
 	{
 		Uint64 now = SDL_GetTicksNS();
-		// ƒfƒ‹ƒ^ƒ^ƒCƒ€‚Ìì¬
+		// ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ ã®ä½œæˆ
 		float dt = (now - prev) / 1'000'000'000.0f;  // ns -> seconds
 		prev = now;
 
-		if (dt > 0.1f) dt = 0.1f;  // dt ‚ª 0.1•bˆÈã‚È‚çŒÅ’è
+		if (dt > 0.1f) dt = 0.1f;  // dt ãŒ 0.1ç§’ä»¥ä¸Šãªã‚‰å›ºå®š
 
 		processEvents();
 		update(dt);
 		render();
 
-		SDL_Delay(1); // ˆê‹C‚Édt‚ª‹‘å‰»‚·‚é‚Ì‚ğ–h‚®
+		SDL_Delay(1); // ä¸€æ°—ã«dtãŒå·¨å¤§åŒ–ã™ã‚‹ã®ã‚’é˜²ã
 	}
 }
 
@@ -106,10 +106,10 @@ void Game::processEvents()
 		}
 
 		else if (event.type == SDL_EVENT_KEY_DOWN) {
-			// ƒ^ƒCƒgƒ‹‰æ–Ê‚Ì
+			// ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã®æ™‚
 			if (m_status == GameStatus::Title) {
 				if (event.key.key == SDLK_SPACE) {
-					m_status = GameStatus::Playing; // ƒQ[ƒ€ŠJnI
+					m_status = GameStatus::Playing; // ã‚²ãƒ¼ãƒ é–‹å§‹ï¼
 				}
 			}
 			else if (m_status == GameStatus::GameOver)
@@ -128,7 +128,7 @@ void Game::processEvents()
 					resetGame();
 				}
 			}
-			// ƒNƒŠƒA‰æ–Ê‚Ì
+			// ã‚¯ãƒªã‚¢ç”»é¢ã®æ™‚
 			else if (m_status == GameStatus::Clear) {
 				if (event.key.key == SDLK_T) {
 					m_status = GameStatus::Title;
@@ -162,13 +162,13 @@ void Game::update(float dt)
 			m_shakeTimer -= dt;
 		}
 
-		updateEntities(dt);  // “®‚©‚·
-		checkCollisions();   // “–‚½‚Á‚Ä‚¢‚é‚©’²‚×‚é
-		spawnBullets();      // V‚µ‚­¶¬‚·‚é
-		cleanupEntities();   // •s—v‚È‚à‚Ì‚ğÁ‚·
-		updateCamera();      // ƒJƒƒ‰‚ğ‡‚í‚¹‚é
+		updateEntities(dt);  // å‹•ã‹ã™
+		checkCollisions();   // å½“ãŸã£ã¦ã„ã‚‹ã‹èª¿ã¹ã‚‹
+		spawnBullets();      // æ–°ã—ãç”Ÿæˆã™ã‚‹
+		cleanupEntities();   // ä¸è¦ãªã‚‚ã®ã‚’æ¶ˆã™
+		updateCamera();      // ã‚«ãƒ¡ãƒ©ã‚’åˆã‚ã›ã‚‹
 
-		// ƒQ[ƒ€ƒI[ƒo[”»’è
+		// ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼åˆ¤å®š
 		if (m_player->getCurrentHp() <= 0) {
 			m_status = GameStatus::GameOver;
 		}
@@ -204,17 +204,17 @@ void Game::checkCollisions()
 
 	for (auto& door : m_doors)
 	{
-		// ƒhƒA‚ÌXViƒAƒjƒ[ƒVƒ‡ƒ“‚È‚Çj
+		// ãƒ‰ã‚¢ã®æ›´æ–°ï¼ˆã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãªã©ï¼‰
 
-		// ƒvƒŒƒCƒ„[‚Æ‚Ì“–‚½‚è”»’è
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®å½“ãŸã‚Šåˆ¤å®š
 		if (m_player->collider().intersect(door->collider())) {
 
-			// 3. ‚à‚µƒhƒA‚ªŠ®‘S‚ÉŠJ‚¢‚Ä‚¢‚È‚¯‚ê‚ÎA•Ç‚Æ‚µ‚Ä‰Ÿ‚µ–ß‚·
+			// 3. ã‚‚ã—ãƒ‰ã‚¢ãŒå®Œå…¨ã«é–‹ã„ã¦ã„ãªã‘ã‚Œã°ã€å£ã¨ã—ã¦æŠ¼ã—æˆ»ã™
 			if (!door->isOpen()) {
 				float vx = m_player->velX;
 				float vy = m_player->velY;
 
-				// Šù‘¶‚ÌÕ“Ë‰ğŒˆƒƒ\ƒbƒh‚ğ—˜—p‚µ‚ÄAƒhƒA‚ğ•Ç‚Æ‚µ‚Äˆµ‚¤
+				// æ—¢å­˜ã®è¡çªè§£æ±ºãƒ¡ã‚½ãƒƒãƒ‰ã‚’åˆ©ç”¨ã—ã¦ã€ãƒ‰ã‚¢ã‚’å£ã¨ã—ã¦æ‰±ã†
 				vector<BoxCollider> tempDoorVec = { door->collider() };
 				BoxCollider::resolveCollision(m_player->collider(), vx, vy, tempDoorVec);
 
@@ -227,7 +227,7 @@ void Game::checkCollisions()
 	for (auto& enemy : m_enemies) 
 	{
 		enemy->checkPlayerCollision(*m_player);
-		// “G‚Æ‚Ì“–‚½‚è”»’èƒ‹[ƒv
+		// æ•µã¨ã®å½“ãŸã‚Šåˆ¤å®šãƒ«ãƒ¼ãƒ—
 		if (!enemy->isDead())
 		{
 			if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
@@ -236,11 +236,11 @@ void Game::checkCollisions()
 				{
 					//m_player->takeDamage(10);
 
-					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// player‚Ì‚˜²‚Ì’†S‚ğ‹‚ß‚é
-					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemy‚Ì‚˜²‚Ì’†S‚ğ‹‚ß‚é
+					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerã®ï½˜è»¸ã®ä¸­å¿ƒã‚’æ±‚ã‚ã‚‹
+					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyã®ï½˜è»¸ã®ä¸­å¿ƒã‚’æ±‚ã‚ã‚‹
 
 
-					// “G‚©‚ç‚İ‚Äplayer‚ª‚Ç‚¿‚ç‚ÉŒü‚¢‚Ä‚¢‚é‚©‚Ì”»’è
+					// æ•µã‹ã‚‰ã¿ã¦playerãŒã©ã¡ã‚‰ã«å‘ã„ã¦ã„ã‚‹ã‹ã®åˆ¤å®š
 					float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
 
 					enemy->applyKnockback(direction * -500.0f, -400.0f);
@@ -277,11 +277,16 @@ void Game::checkCollisions()
 		playSE("assets/se_clear");
 	}
 
+	if (m_player->collider().rect().y > m_levelHeight)
+	{
+		m_status = GameStatus::GameOver;
+	}
+
 }
 
 void Game::spawnBullets() 
 {
-	// ƒvƒŒƒCƒ„[‚Ì’†SÀ•W‚ğŒvZ
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸­å¿ƒåº§æ¨™ã‚’è¨ˆç®—
 	SDL_FRect pRect = m_player->collider().rect();
 
 	float playerCenterX = pRect.x + pRect.w / 2.0f;
@@ -293,7 +298,7 @@ void Game::spawnBullets()
 	float spawnX = (m_player->m_facingDir > 0) ? (pRect.x + pRect.w) : (pRect.x - bulletW);
 	float spawnY = playerCenterY - (bulletH / 2.0f);
 
-	// ’e‚Ì”­Ë
+	// å¼¾ã®ç™ºå°„
 	if (m_player->wantsToShoot())
 	{
 		AimDir dir = m_player->getAimDir();
@@ -303,7 +308,7 @@ void Game::spawnBullets()
 		m_bullets.push_back(make_unique<Bullet>(
 			m_renderer,
 			spawnX, spawnY, bulletW, bulletH,
-			// ’e‚ğŒ‚‚Â‚½‚Ñ‚É IMG_LoadTexture‚ğ“Ç‚ñ‚Å‚¢‚½‚ª‹N“®‚Éƒ|ƒCƒ“ƒ^‚ÅêŠ‚ğw’è‚·‚é‚±‚Æ‚Åˆê‰ñ‚Ì“Ç‚İ‚İ‚Å‚æ‚­‚È‚è‚©‚­‚Â‚«‚ª‰ğÁ‚³‚ê‚½
+			// å¼¾ã‚’æ’ƒã¤ãŸã³ã« IMG_LoadTextureã‚’èª­ã‚“ã§ã„ãŸãŒèµ·å‹•æ™‚ã«ãƒã‚¤ãƒ³ã‚¿ã§å ´æ‰€ã‚’æŒ‡å®šã™ã‚‹ã“ã¨ã§ä¸€å›ã®èª­ã¿è¾¼ã¿ã§ã‚ˆããªã‚Šã‹ãã¤ããŒè§£æ¶ˆã•ã‚ŒãŸ
 			m_bulletTexture,
 			dir.vx, dir.vy
 		));
@@ -312,12 +317,12 @@ void Game::spawnBullets()
 	}
 
 	for (auto& bullet : m_bullets) {
-		// Á‚¦‚Ä‚¢‚é’e‚Í–³‹
+		// æ¶ˆãˆã¦ã„ã‚‹å¼¾ã¯ç„¡è¦–
 		if (!bullet->isActive()) continue;
 
 		for (auto& enemy : m_enemies)
 		{
-			// Šù‚ÉÁ‚¦‚Ä‚¢‚¢‚é“G‚ğ–³‹
+			// æ—¢ã«æ¶ˆãˆã¦ã„ã„ã‚‹æ•µã‚’ç„¡è¦–
 			if (enemy->isDead()) continue;
 
 			if (bullet->collider().intersect(enemy->collider()))
@@ -365,18 +370,18 @@ void Game::updateCamera()
 
 	float playerCenterX = pRect.x + pRect.w / 2.0f;
 	float playerCenterY = pRect.y + pRect.h / 2.0f;
-	// ƒJƒƒ‰‚ğƒvƒŒƒCƒ„[‚Ì’†S‚É‡‚í‚¹‚é
+	// ã‚«ãƒ¡ãƒ©ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸­å¿ƒã«åˆã‚ã›ã‚‹
 	m_camera.x = playerCenterX - m_camera.w / 2.0f;
 	m_camera.y = playerCenterY - m_camera.h / 2.0f;
 
-	// ‰æ–Ê‚ğ—h‚ç‚·
+	// ç”»é¢ã‚’æºã‚‰ã™
 	//if (m_shakeTimer > 0)
 	//{
 	//	m_camera.x += (static_cast<float>(rand() % 17) - 8.0f);
 	//	m_camera.y += (static_cast<float>(rand() % 17) - 8.0f);
 	//}
 
-	// ƒJƒƒ‰‚Ì”ÍˆÍ§ŒÀ
+	// ã‚«ãƒ¡ãƒ©ã®ç¯„å›²åˆ¶é™
 	if (m_camera.x < 0)
 	{
 		m_camera.x = 0;
@@ -397,7 +402,7 @@ void Game::render()
 
 
 	if (m_status == GameStatus::Title) {
-		// ƒ^ƒCƒgƒ‹‰æ–Ê‚Ì•`‰æ
+		// ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã®æç”»
 		SDL_SetRenderDrawColor(m_renderer, 0, 100, 0, 255);
 		SDL_RenderClear(m_renderer);
 		renderTitle();
@@ -409,7 +414,7 @@ void Game::render()
 		renderGameOver();
 	}
 	else if (m_status == GameStatus::Clear) {
-		// ƒNƒŠƒA‰æ–Ê‚Ì•`‰æ
+		// ã‚¯ãƒªã‚¢ç”»é¢ã®æç”»
 		SDL_SetRenderDrawColor(m_renderer, 0, 100, 0, 255);
 		SDL_RenderClear(m_renderer);
 		renderClear();
@@ -456,13 +461,13 @@ void Game::render()
 			SDL_FRect hpRect = { 20.0f, 20.0f, barWidth, 20.0f };
 
 			if (hpRatio > 0.5f) {
-				SDL_SetRenderDrawColor(m_renderer, 0, 255, 0, 255);  // —Î
+				SDL_SetRenderDrawColor(m_renderer, 0, 255, 0, 255);  // ç·‘
 			}
 			else if (hpRatio > 0.2f) {
-				SDL_SetRenderDrawColor(m_renderer, 255, 255, 0, 255); // ‰©F
+				SDL_SetRenderDrawColor(m_renderer, 255, 255, 0, 255); // é»„è‰²
 			}
 			else {
-				SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 255);   // Ô
+				SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 255);   // èµ¤
 			}
 
 			SDL_RenderFillRect(m_renderer, &hpRect);
@@ -472,7 +477,7 @@ void Game::render()
 		}
 	}
 
-	// ‰æ–Ê‚É”½‰f
+	// ç”»é¢ã«åæ˜ 
 	SDL_RenderPresent(m_renderer);
 }
 
@@ -606,7 +611,7 @@ void Game::loadConfig(const string& filename)
 		trim(name);
 		trim(valueStr);
 
-		if (name == "ƒpƒ‰ƒ[ƒ^–¼" || name == "’l" || valueStr.empty()) {
+		if (name == "ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å" || name == "å€¤" || valueStr.empty()) {
 			continue;
 		}
 		try
@@ -675,7 +680,7 @@ void Game::renderTitle()
 
 		float alpha = (sinf(m_titleTimer * 2.0f) + 1.0f) / 2.0f * 255.0f;
 
-		SDL_SetTextureBlendMode(m_titleLogo, SDL_BLENDMODE_BLEND); // ƒuƒŒƒ“ƒhƒ‚[ƒh‚ğ—LŒø‰»
+		SDL_SetTextureBlendMode(m_titleLogo, SDL_BLENDMODE_BLEND); // ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰ã‚’æœ‰åŠ¹åŒ–
 		SDL_SetTextureAlphaMod(m_titleLogo, (Uint8)alpha);
 
 		SDL_RenderTexture(m_renderer, m_titleLogo, nullptr, &logoRect);
