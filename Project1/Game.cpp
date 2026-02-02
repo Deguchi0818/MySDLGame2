@@ -63,7 +63,7 @@ bool Game::init(const string& title, int width, int height)
 
 	
 	loadConfig("PlayerParams.csv");
-	loadMap("map.txt");	
+	loadMap("assets/map.txt");	
 
 	m_resourceManager->getAudio("assets/se_jump.mp3");
 	m_resourceManager->getAudio("assets/se_shoot.mp3");
@@ -563,6 +563,14 @@ void Game::loadMap(const string& filename)
 					m_resourceManager->getTexture("assets/enemy.png")
 				));
 			}
+			else if(tile == 'B')
+			{
+				m_enemies.push_back(make_unique<Boss>(
+					x, y, 128.0f, 128.0f,
+					m_resourceManager->getTexture("assets/Boss.png"),
+					m_resourceManager->getTexture("assets/Boss_dash.png")
+				));
+			}
 			else if (tile == 'D') {
 				m_doors.push_back(make_unique<Door>(x, y, (float)TILE_SIZE, (float)TILE_SIZE * 2, DoorColor::Blue));
 			}
@@ -643,7 +651,7 @@ void Game::loadConfig(const string& filename)
 
 void Game::resetGame() 
 {
-	loadMap("map.txt");
+	loadMap("assets/map.txt");
 
 	loadConfig("PlayerParams.csv");
 }

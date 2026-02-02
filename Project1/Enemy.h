@@ -6,6 +6,13 @@
 #include<iostream>
 #include<vector>
 
+enum class BossState {
+	Idle,      // 待機（プレイヤーを狙う）
+	Prepare,   // 溜め（突進前の予備動作）
+	Dash,      // 突進中
+	Stun,      // 衝突後の気絶（攻撃チャンス）
+	Return     // 画面中央へ戻る
+};
 
 class Enemy
 {

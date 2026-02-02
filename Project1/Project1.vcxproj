@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AirborneState.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
@@ -42,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AirborneState.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="EnemyBullet.h" />
