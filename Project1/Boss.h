@@ -1,5 +1,17 @@
 #pragma once
 #include "Enemy.h"
+
+enum class BossState {
+    Idle,      // 待機（プレイヤーを狙う）
+    Prepare,   // 溜め（突進前の予備動作）
+    Dash,      // 突進中
+    Stun,      // 衝突後の気絶
+    Return,     // 画面中央へ戻る
+    JumpUp,    // 上昇＆プレイヤー追従
+    Hover,     // 真上で一時停止
+    Fall       // 急降下
+};
+
 class Boss : public Enemy
 {
 public:
