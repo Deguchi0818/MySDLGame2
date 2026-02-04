@@ -27,7 +27,7 @@ public:
 
     void takeDamage() override;
     void applyKnockback(float forceX, float forceY) override;
-
+    bool isBoss() const override { return true; }
 private:
     SDL_Texture* m_dashTexture = nullptr;
     BossState m_currentState = BossState::Idle;

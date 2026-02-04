@@ -99,7 +99,7 @@ public:
 		static vector<unique_ptr<Bullet>> empty;
 		return empty;
 	}
-
+	virtual bool isBoss() const { return false; }
 protected:
 	BoxCollider m_collider;
 	SDL_Texture* m_texture;

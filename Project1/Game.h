@@ -114,5 +114,8 @@ private:
 	void playSE(const std::string& path);
 
 	float m_shakeTimer = 0.0f;
+
+	int m_currentLevel = 1;
+	void transitionToBossRoom();
 };
 

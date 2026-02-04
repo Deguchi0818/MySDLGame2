@@ -252,7 +252,7 @@ void Game::checkCollisions()
 				if (m_player->takeDamage(10))
 				{
 					playSE("assets/se_damage.mp3");
-					m_shakeTimer = 0.3f;
+					//m_shakeTimer = 0.3f;
 				}
 			}
 
@@ -263,7 +263,7 @@ void Game::checkCollisions()
 					if (m_player->takeDamage(5))
 					{
 						playSE("assets/se_damage.mp3");
-						m_shakeTimer = 0.3f;
+						//m_shakeTimer = 0.3f;
 					}
 					b->deleteBullet();
 				}
@@ -273,8 +273,8 @@ void Game::checkCollisions()
 
 	if (m_goal && m_player->collider().intersect(m_goal->collider()))
 	{
-		m_status = GameStatus::Clear;
-		playSE("assets/se_clear");
+		m_status = GameStatus::BossBattle;
+		transitionToBossRoom();
 	}
 
 	if (m_player->collider().rect().y > m_levelHeight)
@@ -351,14 +351,33 @@ void Game::cleanupEntities()
 		return !b->isActive();
 		});
 
-	erase_if(m_enemies, [](const std::unique_ptr<Enemy>& e) {
-		return e->isDead();
-		});
+	//erase_if(m_enemies, [](const std::unique_ptr<Enemy>& e) {
+	//	return e->isDead();
+	//	});
 
 	if (m_player->isJumpTriggered())
 	{
 		if (m_player->isJumpTriggered()) {
 			playSE("assets/se_jump.mp3");
+		}
+	}
+
+	auto it = m_enemies.begin();
+	while (it != m_enemies.end())
+	{
+		if ((*it)->isDead()) 
+		{
+			if ((*it)->isBoss()) 
+			{
+				m_shakeTimer = 1.0f;
+
+				m_status = GameStatus::Clear;
+			}
+			it = m_enemies.erase(it);
+		}
+		else
+		{
+			++it;
 		}
 	}
 }
@@ -375,11 +394,11 @@ void Game::updateCamera()
 	m_camera.y = playerCenterY - m_camera.h / 2.0f;
 
 	// 画面を揺らす
-	//if (m_shakeTimer > 0)
-	//{
-	//	m_camera.x += (static_cast<float>(rand() % 17) - 8.0f);
-	//	m_camera.y += (static_cast<float>(rand() % 17) - 8.0f);
-	//}
+	if (m_shakeTimer > 0)
+	{
+		m_camera.x += (static_cast<float>(rand() % 17) - 8.0f);
+		m_camera.y += (static_cast<float>(rand() % 17) - 8.0f);
+	}
 
 	// カメラの範囲制限
 	if (m_camera.x < 0)
@@ -506,6 +525,10 @@ void Game::loadMap(const string& filename)
 	m_enemies.clear();
 	m_bullets.clear();
 	m_doors.clear();
+	m_goal.reset();
+
+	m_levelWidth = 0;
+	m_levelHeight = 0;
 
 	ifstream file(filename);
 	if (!file.is_open()) 
@@ -647,6 +670,18 @@ void Game::loadConfig(const string& filename)
 	{
 		m_player->applyParams(params);
 	}
+}
+
+void Game::transitionToBossRoom() 
+{
+	m_grounds.clear();
+	m_enemies.clear();
+	m_bullets.clear();
+	m_goal.reset();
+
+	m_currentLevel = 2;
+
+	loadMap("assets/map_boss.txt");
 }
 
 void Game::resetGame() 
