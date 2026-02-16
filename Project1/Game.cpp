@@ -107,9 +107,14 @@ void Game::processEvents()
 
 		else if (event.type == SDL_EVENT_KEY_DOWN) {
 			// タイトル画面の時
-			if (m_status == GameStatus::Title) {
-				if (event.key.key == SDLK_SPACE) {
-					m_status = GameStatus::Playing; // ゲーム開始！
+			if (m_status == GameStatus::Title) 
+			{
+				if (event.key.key == SDLK_SPACE) 
+				{
+					if (!m_isFadingOut && !m_isFadingIn) {
+						m_isFadingOut = true;
+						m_fadeAlpha = 0.0f;
+					}
 				}
 			}
 			else if (m_status == GameStatus::GameOver)
@@ -168,11 +173,14 @@ void Game::update(float dt)
 		cleanupEntities();   // 不要なものを消す
 		updateCamera();      // カメラを合わせる
 
+
 		// ゲームオーバー判定
 		if (m_player->getCurrentHp() <= 0) {
 			m_status = GameStatus::GameOver;
 		}
 	}
+
+	updateFade(dt);
 }
 
 void Game::updateEntities(float dt)
@@ -274,7 +282,8 @@ void Game::checkCollisions()
 	if (m_goal && m_player->collider().intersect(m_goal->collider()))
 	{
 		m_status = GameStatus::BossBattle;
-		transitionToBossRoom();
+		m_isFadingOut = true;
+		//transitionToBossRoom();
 	}
 
 	if (m_player->collider().rect().y > m_levelHeight)
@@ -495,6 +504,7 @@ void Game::render()
 			SDL_RenderRect(m_renderer, &bgRect);
 		}
 	}
+	renderFade();
 
 	// 画面に反映
 	SDL_RenderPresent(m_renderer);
@@ -820,5 +830,64 @@ void Game::playSE(const std::string& path) {
 	MIX_Audio* audio = m_resourceManager->getAudio(path);
 	if (audio) {
 		MIX_PlayAudio(m_mixer, audio);
+	}
+}
+
+void Game::updateFade(float dt) 
+{
+	if(m_isFadingOut)
+	{
+		m_fadeAlpha += dt * m_fadeSpeed;
+		if (m_fadeAlpha >= 1.0f) 
+		{
+			m_fadeAlpha = 1.0f;
+			m_isFadingOut = false;
+			
+			onFadeOutComplete();
+		}
+	}
+	else if(m_isFadingIn)
+	{
+		m_fadeAlpha -= dt * m_fadeSpeed;
+		if (m_fadeAlpha <= 0.0f) 
+		{
+			m_fadeAlpha = 0.0f;
+			m_isFadingIn = false;
+		}
+	}
+}
+
+void Game::renderFade() 
+{
+	if (m_fadeAlpha <= 0.0f) return;
+
+	SDL_FRect screenRect = { 0, 0, (float)m_width, (float)m_height };
+
+	// ブレンドモードを有効にする（透明度を使えるようにする）
+	SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+
+	// 黒色の透明度を設定
+	Uint8 alphaValue = static_cast<Uint8>(m_fadeAlpha * 255.0f);
+	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, alphaValue);
+
+	// 描画
+	SDL_RenderFillRect(m_renderer, &screenRect);
+}
+
+void Game::onFadeOutComplete() 
+{
+	if (m_status == GameStatus::BossBattle)
+	{
+		transitionToBossRoom(); // マップを読み込む
+
+		m_fadeAlpha = 1.0f;
+		m_isFadingIn = true;
+		m_isFadingOut = false;
+	}
+
+	if (m_status == GameStatus::Title) {
+		m_status = GameStatus::Playing; 
+		resetGame();
+		m_isFadingIn = true;
 	}
 }

@@ -8,8 +8,8 @@ void Enemy::handleStunState(float dt) {
     }
 }
 
-void Enemy::updatePhysics(float dt, const vector<BoxCollider>& grounds) {
-    m_velY += 1500.0f * dt; // d—Í
+void Enemy::updatePhysics(float dt, const std::vector<BoxCollider>& grounds) {
+    m_velY += 1500.0f * dt; // ‰º•ûŒü‚Ö‚Ìd—Í‰Á‘¬“x
 
     SDL_FRect r = m_collider.rect();
     r.x += m_velX * dt;

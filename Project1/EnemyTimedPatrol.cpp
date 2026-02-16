@@ -11,6 +11,7 @@ void EnemyTimedPatrol::turn(float dt)
 {
 	m_turnTimer += dt;
 
+	// m_turnTimer‚ªm_turnInterval–¢–ž‚É‚È‚Á‚½‚çƒ^[ƒ“
 	if (m_turnTimer > m_turnInterval) 
 	{
 		m_turnTimer = 0.0f;

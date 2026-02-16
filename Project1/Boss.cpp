@@ -5,13 +5,14 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
     m_stateTimer += dt;
     updateFlashTimer(dt);
 
-    float isAngry = (m_hp <= 25);
+    bool isAngry = (m_hp <= m_maxHp / 2);   // 体力が半分以下になったら状態変化
     float currentSpeed = isAngry ? speed * 1.5f : speed;
 
     switch (m_currentState)
     {
     case BossState::Idle:
         m_velX = 0;
+        // playerより右にいたら右を向いて左にいたら左に向く
         m_dashDir = (playerRect.x > m_collider.rect().x) ? 1.0f : -1.0f;
 
         if (m_stateTimer > 2.0f) 
@@ -34,7 +35,9 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
         m_velY = -1100.0f;
 
         // 上昇中も少しだけプレイヤーに近づく
-        float targetX = playerRect.x + (playerRect.w / 2.0f) - (m_collider.rect().w / 2.0f);
+        // playerの位置を求める。そのままではボスの左端がplayerの真上に行くのでボスのサイズ半分ずらすことでボスの中心が真上に行くようにする
+        float targetX = playerRect.x + (playerRect.w / 2.0f) -(m_collider.rect().w / 2.0f);
+        // 20.0fはtargetXだけだと中心が少しずれると左右にガタガタ震える可能性があるので、それを防ぐためのデットゾーン
         if (m_collider.rect().x < targetX - 20.0f) m_velX = currentSpeed * 0.5f;
         else if (m_collider.rect().x > targetX + 20.0f) m_velX = -currentSpeed * 0.5f;
 
@@ -49,20 +52,23 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
 
     case BossState::Hover: 
     {  
-        m_velY = 0;
+        m_velY = 0; // 重力を受けない
         float targetX = playerRect.x + (playerRect.w / 2.0f) - (m_collider.rect().w / 2.0f);
 
        
-        if (m_stateTimer < 0.8f) {
+        if (m_stateTimer < 0.8f) 
+        {
             if (m_collider.rect().x < targetX - 5.0f) m_velX = currentSpeed * 1.2f;
             else if (m_collider.rect().x > targetX + 5.0f) m_velX = -currentSpeed * 1.2f;
             else m_velX = 0;
         }
       
-        else {
+        else 
+        {
             m_velX = 0;
         }
-        if (m_stateTimer > 1.2f) {
+        if (m_stateTimer > 1.2f) 
+        {
             m_currentState = BossState::Fall;
             m_stateTimer = 0.0f;
         }
@@ -73,7 +79,9 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
         m_velX = 0;
         m_velY = 1500.0f;
 
-        if (isOnGround()) { 
+        // 地面についたときIdle
+        if (isOnGround()) 
+        { 
             m_currentState = BossState::Idle;
             m_stateTimer = 0.0f;
         }
@@ -83,6 +91,7 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
         m_velX = 0;
         if (m_stateTimer > 1.5f)
         {
+            // 向きと速度をかけて突進開発
             m_velX = m_dashDir * speed;
             m_currentState = BossState::Dash;
             m_stateTimer = 0.0f;
@@ -125,6 +134,7 @@ void Boss::takeDamage()
 {
 	if (m_isDead || m_flashTimer > 0) return;
 
+    // スタンしていたらダメージが変わる
 	m_hp -= (m_currentState == BossState::Stun) ? 2 : 1;
 
 	m_flashTimer = 0.1f;
@@ -157,6 +167,7 @@ void Boss::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset) {
     SDL_FRect dst;
     dst.w = drawW;
     dst.h = drawH;
+    // 当たり判定の中心を求めて描画サイズの半分を引くことで中心を合わせている
     dst.x = (m_collider.rect().x + m_collider.rect().w / 2.0f) - (drawW / 2.0f) - cameraOffset.x;
     dst.y = (m_collider.rect().y + m_collider.rect().h) - drawH - cameraOffset.y;
 

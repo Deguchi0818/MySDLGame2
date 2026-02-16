@@ -117,5 +117,15 @@ private:
 
 	int m_currentLevel = 1;
 	void transitionToBossRoom();
+
+	float m_fadeAlpha = 0.0f;
+	float m_fadeSpeed = 1.5f;
+	bool m_isFadingOut = false;
+	bool m_isFadingIn = false;
+
+	void updateFade(float dt); 
+	void renderFade();
+	void onFadeOutComplete();
+
 };
 

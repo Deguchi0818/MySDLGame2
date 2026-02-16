@@ -21,10 +21,12 @@ void EnemyWalking::update(float dt, const SDL_FRect& playerRect, const Player& p
     handleWallBounce(beforeVelX);
 }
 
+// 壁に当たった時
 void EnemyWalking::handleWallBounce(float beforeVelX) 
 {
-    //if (m_velX == 0) m_velX = -beforeVelX;
-    if (m_stunTimer <= 0 && m_velX == 0 && beforeVelX != 0) {
+    // スタンしていないかつ速度が０かつ判定前に速度があったかどうか
+    if (m_stunTimer <= 0 && m_velX == 0 && beforeVelX != 0)
+    {
         m_velX = (beforeVelX > 0) ? -speed : speed;
     }
 }

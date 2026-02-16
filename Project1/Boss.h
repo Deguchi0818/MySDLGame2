@@ -18,7 +18,7 @@ public:
     Boss(float x, float y, float w, float h, SDL_Texture* texture, SDL_Texture* dashTexture)
         : Enemy(x, y, w, h, texture), m_dashTexture(dashTexture)
     { 
-        m_hp = 50;
+        m_hp = m_maxHp;
         speed = 400.0f;
     }
 
@@ -33,6 +33,7 @@ private:
     BossState m_currentState = BossState::Idle;
     float m_stateTimer = 0.0f;
     float m_shakeTimer = 0.0f; // k‚¦‰‰o—p
-    float m_dashDir = 0.0f;
+    float m_dashDir = 0.0f;    // Œü‚«
+    int m_maxHp = 50;
 };
 
