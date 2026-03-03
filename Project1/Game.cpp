@@ -449,6 +449,8 @@ void Game::render()
 	}
 	else 
 	{
+		renderStage();
+
 		m_player->render(m_renderer, { m_camera.x, m_camera.y });
 
 		for (auto& bullet : m_bullets) {
@@ -708,6 +710,8 @@ void Game::loadTextAssets()
 	m_retryText = m_resourceManager->getTexture("assets/retry_text.png");
 	m_titleReturnText = m_resourceManager->getTexture("assets/return_title_text.png");
 	m_clearLogo = m_resourceManager->getTexture("assets/gameclear.png");
+	m_background = m_resourceManager->getTexture("assets/background.png");
+	m_bossBackground = m_resourceManager->getTexture("assets/boss_background.png");
 }
 
 void Game::renderTitle() 
@@ -739,6 +743,54 @@ void Game::renderTitle()
 		SDL_RenderTexture(m_renderer, m_titleLogo, nullptr, &logoRect);
 	}
 
+}
+
+void Game::renderStage() 
+{
+	SDL_SetRenderDrawColor(m_renderer, 10, 10, 30, 255);
+	SDL_RenderClear(m_renderer);
+
+	if (m_status == GameStatus::Playing && m_background) 
+	{
+		float texW, texH;
+		SDL_GetTextureSize(m_background, &texW, &texH);
+
+		float scale = 1500.0f / texW;
+		float drawW = texW * scale;
+		float drawH = texH * scale;
+
+		SDL_FRect logoRect = {
+			(m_width - drawW) / 2.0f,
+			0.0f,
+			drawW,
+			drawH
+		};
+
+		SDL_RenderTexture(m_renderer, m_background, nullptr, &logoRect);
+
+		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+	}
+
+	else if (m_status == GameStatus::BossBattle && m_bossBackground)
+	{
+		float texW, texH;
+		SDL_GetTextureSize(m_bossBackground, &texW, &texH);
+
+		float scale = 1500.0f / texW;
+		float drawW = texW * scale;
+		float drawH = texH * scale;
+
+		SDL_FRect logoRect = {
+			(m_width - drawW) / 2.0f,
+			0.0f,
+			drawW,
+			drawH
+		};
+
+		SDL_RenderTexture(m_renderer, m_bossBackground, nullptr, &logoRect);
+
+		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+	}
 }
 
 void Game::renderGameOver()

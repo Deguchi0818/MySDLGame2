@@ -93,6 +93,8 @@ private:
 	SDL_Texture* m_retryText = nullptr;
 	SDL_Texture* m_titleReturnText = nullptr;
 	SDL_Texture* m_clearLogo = nullptr;
+	SDL_Texture* m_background = nullptr;
+	SDL_Texture* m_bossBackground = nullptr;
 
 	MIX_Mixer* m_mixer = nullptr;
 
@@ -101,6 +103,7 @@ private:
 	void renderTitle();
 	void renderGameOver();
 	void renderClear();
+	void renderStage();
 
 	void updateEntities(float dt);     // プレイヤー、敵、弾などの挙動更新
 	void checkCollisions();            // あらゆる当たり判定の解決
