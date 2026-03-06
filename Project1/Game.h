@@ -56,10 +56,20 @@ private:
 	// èIóπèàóù
 	void cleanup();
 
+	struct SDLWindowDeleter { void operator()(SDL_Window* w) const { SDL_DestroyWindow(w); } };
+	struct SDLRendererDeleter { void operator()(SDL_Renderer* r) const { SDL_DestroyRenderer(r); } };
+	struct SDLTextureDeleter { void operator()(SDL_Texture* t) const { SDL_DestroyTexture(t); } };
+	struct MixerDeleter {
+		void operator()(MIX_Mixer* m) const {
+			if (m) MIX_DestroyMixer(m); // Close Ç…èëÇ´ä∑Ç¶
+		}
+	};
+
 	bool m_isRunning{ false };
 
-	SDL_Window* m_window{ nullptr };
-	SDL_Renderer* m_renderer{ nullptr };
+	std::unique_ptr<SDL_Window, SDLWindowDeleter> m_window;
+	std::unique_ptr<SDL_Renderer, SDLRendererDeleter> m_renderer;
+	std::unique_ptr<MIX_Mixer, MixerDeleter> m_mixer;
 
 	std::unique_ptr<Player> m_player;
 	std::vector < unique_ptr<Enemy>> m_enemies;
@@ -95,9 +105,6 @@ private:
 	SDL_Texture* m_clearLogo = nullptr;
 	SDL_Texture* m_background = nullptr;
 	SDL_Texture* m_bossBackground = nullptr;
-
-	MIX_Mixer* m_mixer = nullptr;
-
 
 	void loadTextAssets();
 	void renderTitle();

@@ -6,7 +6,7 @@ Player::Player(SDL_Renderer* renderer,
 	SDL_Texture* texture)
 	:m_collider(x, y, w, h), m_texture(texture)
 {
-	changeState(make_unique<IdleState>());
+	changeState(std::make_unique<IdleState>());
 }
 Player::~Player() 
 {
