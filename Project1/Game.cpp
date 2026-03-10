@@ -748,7 +748,7 @@ void Game::renderTitle()
 void Game::renderStage() 
 {
 	SDL_SetRenderDrawColor(m_renderer.get(), 10, 10, 30, 255);
-	SDL_RenderClear(m_renderer.get());
+	//SDL_RenderClear(m_renderer.get());
 
 	if (m_status == GameStatus::Playing && m_background) 
 	{
@@ -776,7 +776,7 @@ void Game::renderStage()
 		float texW, texH;
 		SDL_GetTextureSize(m_bossBackground, &texW, &texH);
 
-		float scale = 1500.0f / texW;
+		float scale = (float)m_levelWidth / texW;
 		float drawW = texW * scale;
 		float drawH = texH * scale;
 
