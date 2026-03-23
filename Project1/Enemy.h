@@ -122,7 +122,7 @@ protected:
 	int m_hp = 3;				// Žc‚èhp
 	bool m_onGround = false;	// ’n–Ê‚É‚¢‚é‚©‚Ç‚¤‚©
 	float m_flashTimer = 0.0f;
-
+	int m_stuckFrames = 0;
 	
 
 };

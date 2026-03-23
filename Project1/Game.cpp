@@ -393,7 +393,7 @@ void Game::cleanupEntities()
 	if (m_player->isJumpTriggered())
 	{
 		if (m_player->isJumpTriggered()) {
-			playSE("assets/se_jump.mp3");
+			playSE("assets/se_jump_01.wav");
 		}
 	}
 
