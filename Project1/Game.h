@@ -118,12 +118,13 @@ private:
 	void updateCamera();               // カメラ位置の計算
 	void cleanupEntities();            // 死んだ敵や消えた弾の削除
 
-	void resetGame();
+	void resetGame();				   // リトライ処理
 
 	unique_ptr<ResourceManager> m_resourceManager;
 	void playSE(const std::string& path);
 
 	float m_shakeTimer = 0.0f;
+	float m_clearTimer = 0.0f;
 
 	int m_currentLevel = 1;
 	void transitionToBossRoom();

@@ -178,6 +178,14 @@ void Game::update(float dt)
 		if (m_player->getCurrentHp() <= 0) {
 			m_status = GameStatus::GameOver;
 		}
+		if (m_clearTimer > 0.0f) 
+		{
+			m_clearTimer -= dt;
+			if (m_clearTimer <= 0.0f)
+			{
+				m_status = GameStatus::Clear;
+			}
+		}
 	}
 
 	updateFade(dt);
@@ -188,10 +196,24 @@ void Game::updateEntities(float dt)
 
 	m_player->update(dt, m_levelWidth, m_levelHeight);
 
+	float activeLeft = m_camera.x - 100.0f;
+	float activeRight = m_camera.x + m_camera.w + 100.0f;
+
 	for (auto& enemy : m_enemies)
 	{
-	
-		enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
+		if (enemy->isBoss()) {
+			enemy->activate();
+		}
+		float ex = enemy->collider().rect().x;
+		if (!enemy->isActive() && ex >= activeLeft && ex <= activeRight) 
+		{
+			enemy->activate();
+		}
+
+		if (enemy->isActive()) 
+		{
+			enemy->update(dt, m_player->collider().rect(), *m_player, m_grounds);
+		}
 	}
 
 	for (auto& bullet : m_bullets)
@@ -217,7 +239,7 @@ void Game::checkCollisions()
 		// プレイヤーとの当たり判定
 		if (m_player->collider().intersect(door->collider())) {
 
-			// 3. もしドアが完全に開いていなければ、壁として押し戻す
+			// もしドアが完全に開いていなければ、壁として押し戻す
 			if (!door->isOpen()) {
 				float vx = m_player->velX;
 				float vy = m_player->velY;
@@ -238,31 +260,35 @@ void Game::checkCollisions()
 		// 敵との当たり判定ループ
 		if (!enemy->isDead())
 		{
-			if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
+			if (!enemy->isDead() && !enemy->isDying()) 
 			{
-				if (m_player->getInvincibleTimer() <= 0)
+				if (!enemy->isStunned() && m_player->collider().intersect(enemy->collider()))
 				{
-					//m_player->takeDamage(10);
+					if (m_player->getInvincibleTimer() <= 0)
+					{
+						//m_player->takeDamage(10);
 
-					float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
-					float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
-
-
-					// 敵からみてplayerがどちらに向いているかの判定
-					float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
-
-					enemy->applyKnockback(direction * -500.0f, -400.0f);
-					m_player->applyKnockback(direction * 500.0f, -400.0f);
+						float pCenterX = m_player->collider().rect().x + m_player->collider().rect().w / 2;	// playerのｘ軸の中心を求める
+						float eCenterX = enemy->collider().rect().x + enemy->collider().rect().w / 2; // enemyのｘ軸の中心を求める
 
 
-				}
+						// 敵からみてplayerがどちらに向いているかの判定
+						float direction = (pCenterX < eCenterX) ? -1.0f : 1.0f;
 
-				if (m_player->takeDamage(10))
-				{
-					playSE("assets/se_damage.mp3");
-					//m_shakeTimer = 0.3f;
+						enemy->applyKnockback(direction * -500.0f, -400.0f);
+						m_player->applyKnockback(direction * 500.0f, -400.0f);
+
+
+					}
+
+					if (m_player->takeDamage(10))
+					{
+						playSE("assets/se_damage.mp3");
+						//m_shakeTimer = 0.3f;
+					}
 				}
 			}
+
 
 			for (auto& b : enemy->getBullets())
 			{
@@ -332,7 +358,7 @@ void Game::spawnBullets()
 		for (auto& enemy : m_enemies)
 		{
 			// 既に消えていいる敵を無視
-			if (enemy->isDead()) continue;
+			if (enemy->isDead() || enemy->isDying()) continue;
 
 			if (bullet->collider().intersect(enemy->collider()))
 			{
@@ -379,8 +405,8 @@ void Game::cleanupEntities()
 			if ((*it)->isBoss()) 
 			{
 				m_shakeTimer = 1.0f;
+				m_clearTimer = 3.0f;
 
-				m_status = GameStatus::Clear;
 			}
 			it = m_enemies.erase(it);
 		}
@@ -748,7 +774,6 @@ void Game::renderTitle()
 void Game::renderStage() 
 {
 	SDL_SetRenderDrawColor(m_renderer.get(), 10, 10, 30, 255);
-	//SDL_RenderClear(m_renderer.get());
 
 	if (m_status == GameStatus::Playing && m_background) 
 	{

@@ -8,7 +8,8 @@ void RunState::handleInput(Player& player, const bool* keys)
 
 	if (!player.isOnGround()) return;
 
-	if (!keys[SDL_SCANCODE_A] && !keys[SDL_SCANCODE_D]) {
+	if (!keys[SDL_SCANCODE_A] && !keys[SDL_SCANCODE_D])
+	{
 		player.changeState(make_unique<IdleState>());
 	}
 }

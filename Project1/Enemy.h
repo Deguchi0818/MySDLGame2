@@ -48,7 +48,10 @@ public:
 	}
 
 	bool isDead() const { return m_isDead; }// 死亡フラグの確認
+	bool isDying() const { return m_isDying; }
 	void die() { m_isDead = true; }
+	bool isActive() const { return m_isActive; }
+	void activate() { m_isActive = true; }
 	const BoxCollider& collider() const { return m_collider; }
 	void handleStunState(float dt);
 	virtual void updatePhysics(float dt, const std::vector<BoxCollider>& grounds);
@@ -109,6 +112,8 @@ protected:
 	BoxCollider m_collider;
 	SDL_Texture* m_texture;
 	bool m_isDead = false;		// 生きているかどうか
+	bool m_isDying = false;
+	bool m_isActive = false;	// 画面に入って動き始めたかどうか
 	float m_velX = 0;
 	float m_velY = 0;
 	float gravity = 1500.0f;	// 下方向への重力加速度
@@ -117,6 +122,8 @@ protected:
 	int m_hp = 3;				// 残りhp
 	bool m_onGround = false;	// 地面にいるかどうか
 	float m_flashTimer = 0.0f;
+
+	
 
 };
 

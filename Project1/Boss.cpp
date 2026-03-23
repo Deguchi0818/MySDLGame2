@@ -15,9 +15,9 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
         // playerより右にいたら右を向いて左にいたら左に向く
         m_dashDir = (playerRect.x > m_collider.rect().x) ? 1.0f : -1.0f;
 
-        if (m_stateTimer > 2.0f) 
+        if (m_stateTimer > 2.0f)
         {
-            if (isAngry && (rand() % 100 < 50) )
+            if (isAngry && (rand() % 100 < 50))
             {
                 m_currentState = BossState::JumpUp;
             }
@@ -30,13 +30,13 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
         }
         break;
 
-    case BossState::JumpUp: 
+    case BossState::JumpUp:
     {
         m_velY = -1100.0f;
 
         // 上昇中も少しだけプレイヤーに近づく
         // playerの位置を求める。そのままではボスの左端がplayerの真上に行くのでボスのサイズ半分ずらすことでボスの中心が真上に行くようにする
-        float targetX = playerRect.x + (playerRect.w / 2.0f) -(m_collider.rect().w / 2.0f);
+        float targetX = playerRect.x + (playerRect.w / 2.0f) - (m_collider.rect().w / 2.0f);
         // 20.0fはtargetXだけだと中心が少しずれると左右にガタガタ震える可能性があるので、それを防ぐためのデットゾーン
         if (m_collider.rect().x < targetX - 20.0f) m_velX = currentSpeed * 0.5f;
         else if (m_collider.rect().x > targetX + 20.0f) m_velX = -currentSpeed * 0.5f;
@@ -48,26 +48,26 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
         }
         break;
     }
-       
 
-    case BossState::Hover: 
-    {  
+
+    case BossState::Hover:
+    {
         m_velY = 0; // 重力を受けない
         float targetX = playerRect.x + (playerRect.w / 2.0f) - (m_collider.rect().w / 2.0f);
 
-       
-        if (m_stateTimer < 0.8f) 
+
+        if (m_stateTimer < 0.8f)
         {
             if (m_collider.rect().x < targetX - 5.0f) m_velX = currentSpeed * 1.2f;
             else if (m_collider.rect().x > targetX + 5.0f) m_velX = -currentSpeed * 1.2f;
             else m_velX = 0;
         }
-      
-        else 
+
+        else
         {
             m_velX = 0;
         }
-        if (m_stateTimer > 1.2f) 
+        if (m_stateTimer > 1.2f)
         {
             m_currentState = BossState::Fall;
             m_stateTimer = 0.0f;
@@ -80,8 +80,8 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
         m_velY = 1500.0f;
 
         // 地面についたときIdle
-        if (isOnGround()) 
-        { 
+        if (isOnGround())
+        {
             m_currentState = BossState::Idle;
             m_stateTimer = 0.0f;
         }
@@ -110,8 +110,14 @@ void Boss::update(float dt, const SDL_FRect& playerRect, const Player& player, c
             m_stateTimer = 0.0f;
         }
         break;
+    case BossState::isDying:
+        m_dyingTimer -= dt;
+        if (m_dyingTimer <= 0.0f) 
+        {
+            die();
+        }
+        break;
     }
-
     float gravityBackup = gravity;
     if (m_currentState == BossState::Hover) gravity = 0;
 
@@ -138,7 +144,18 @@ void Boss::takeDamage()
 	m_hp -= (m_currentState == BossState::Stun) ? 2 : 1;
 
 	m_flashTimer = 0.1f;
-	if (m_hp <= 0) die();
+
+    if (m_hp <= 0)
+    {
+        m_isDying = true;
+        m_dyingTimer = 2.0f;
+
+        m_velX = 0.0f;
+        m_velY = 0.0f;
+
+        m_currentState = BossState::isDying;
+    }
+	
 }
 
 void Boss::applyKnockback(float forceX, float forceY)
@@ -177,10 +194,28 @@ void Boss::render(SDL_Renderer* renderer, const SDL_FPoint& cameraOffset) {
         dst.y += (rand() % 10 - 5) * 1.5f;
     }
 
-    if (m_flashTimer > 0) {
+    if (m_isDying) 
+    {
+        dst.x += (rand() % 9) - 4.0f;
+        dst.y += (rand() % 9) - 4.0f;
+
+        // 高速で点滅させる
+        if (static_cast<int>(m_dyingTimer * 20) % 2 == 0) 
+        {
+            SDL_SetTextureColorMod(m_texture, 255, 0, 0); // 真っ赤や真っ白にする
+        }
+        else
+        {
+            SDL_SetTextureColorMod(m_texture, 255, 255, 255); // 元に戻す
+        }
+    }
+
+    else if (m_flashTimer > 0)
+    {
         SDL_SetTextureColorMod(currentTex, 255, 100, 100);
     }
-    else {
+    else
+    {
         SDL_SetTextureColorMod(currentTex, 255, 255, 255);
     }
 

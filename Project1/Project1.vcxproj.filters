@@ -19,6 +19,12 @@
     <Filter Include="ヘッダー ファイル\PlayerStates">
       <UniqueIdentifier>{d335b7ad-449d-47b6-a478-63da44a2ea51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Enemys">
+      <UniqueIdentifier>{b37edabe-1554-4626-8475-13313bdae44b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Enemys">
+      <UniqueIdentifier>{072ca35c-90db-4bcb-8b94-038a76c9839f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,34 +39,13 @@
     <ClCompile Include="Collider.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyWalking.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyChase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Door.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="GroundedState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyBullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyShooter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyTimedPatrol.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
@@ -84,6 +69,27 @@
     <ClCompile Include="RunState.cpp">
       <Filter>ソース ファイル\PlyerStates</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソース ファイル\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBullet.cpp">
+      <Filter>ソース ファイル\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyChase.cpp">
+      <Filter>ソース ファイル\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyShooter.cpp">
+      <Filter>ソース ファイル\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyTimedPatrol.cpp">
+      <Filter>ソース ファイル\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyWalking.cpp">
+      <Filter>ソース ファイル\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>ソース ファイル\PlyerStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -95,31 +101,13 @@
     <ClInclude Include="Collider.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyWalking.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyChase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Door.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="GroundedState.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyBullet.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyShooter.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyTimedPatrol.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
@@ -145,6 +133,24 @@
     </ClInclude>
     <ClInclude Include="AirborneState.h">
       <Filter>ヘッダー ファイル\PlayerStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ヘッダー ファイル\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBullet.h">
+      <Filter>ヘッダー ファイル\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyChase.h">
+      <Filter>ヘッダー ファイル\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyShooter.h">
+      <Filter>ヘッダー ファイル\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTimedPatrol.h">
+      <Filter>ヘッダー ファイル\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyWalking.h">
+      <Filter>ヘッダー ファイル\Enemys</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

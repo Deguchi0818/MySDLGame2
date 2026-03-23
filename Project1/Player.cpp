@@ -126,9 +126,9 @@ void Player::resetPosition(float x, float y)
 // çUåÇèàóù
 void Player::attack(const bool* keys, float dt) 
 {
-	bool curAttack = keys[SDL_SCANCODE_LSHIFT];
+	bool curAttack = keys[SDL_SCANCODE_J];
 
-	if (keys[SDL_SCANCODE_LSHIFT] && m_fireTimer <= 0)
+	if (keys[SDL_SCANCODE_J] && m_fireTimer <= 0)
 	{
 		m_wantsToShoot = true;
 		m_fireTimer = m_fireCooldown;
@@ -152,13 +152,13 @@ void Player::attack(const bool* keys, float dt)
 			}
 		}
 
-		else if (keys[SDL_SCANCODE_Q]) 
+		else if (keys[SDL_SCANCODE_K]) 
 		{
 			vy = -1.0f;
 			vx;
 		}
 
-		else if (keys[SDL_SCANCODE_E])
+		else if (keys[SDL_SCANCODE_L])
 		{
 			vy = 1.0f;
 			vx;
@@ -176,7 +176,8 @@ void Player::applyKnockback(float forceX,  float forceY)
 	setOnGround(false);
 }
 
-void Player::changeState(std::unique_ptr<PlayerState> newState) {
+void Player::changeState(std::unique_ptr<PlayerState> newState)
+{
 	m_currentState = std::move(newState);
 }
 

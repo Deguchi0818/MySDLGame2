@@ -6,10 +6,11 @@ enum class BossState {
     Prepare,   // 溜め（突進前の予備動作）
     Dash,      // 突進中
     Stun,      // 衝突後の気絶
-    Return,     // 画面中央へ戻る
+    Return,    // 端へ戻る
     JumpUp,    // 上昇＆プレイヤー追従
     Hover,     // 真上で一時停止
-    Fall       // 急降下
+    Fall,      // 急降下
+    isDying    // 死亡 
 };
 
 class Boss : public Enemy
@@ -35,5 +36,7 @@ private:
     float m_shakeTimer = 0.0f; // 震え演出用
     float m_dashDir = 0.0f;    // 向き
     int m_maxHp = 50;
+
+    float m_dyingTimer = 0.0f;
 };
 
