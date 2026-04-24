@@ -45,9 +45,6 @@
     <ClCompile Include="Door.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="GroundedState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -90,6 +87,9 @@
     <ClCompile Include="PlayerState.cpp">
       <Filter>ソース ファイル\PlyerStates</Filter>
     </ClCompile>
+    <ClCompile Include="GroundedState.cpp">
+      <Filter>ソース ファイル\PlyerStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -105,9 +105,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Door.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GroundedState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
@@ -151,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="EnemyWalking.h">
       <Filter>ヘッダー ファイル\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="GroundedState.h">
+      <Filter>ヘッダー ファイル\PlayerStates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

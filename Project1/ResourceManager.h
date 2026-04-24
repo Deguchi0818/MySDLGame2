@@ -15,16 +15,17 @@ public:
     SDL_Texture* getTexture(const std::string& path) 
     {
         auto it = m_textures.find(path);
-        if (it != m_textures.end()) {
+        if (it != m_textures.end()) 
+        {
             return it->second;
         }
 
-        // 最初のロード、連想配列への登録
+        // 最初のロード
         SDL_Texture* texture = IMG_LoadTexture(m_renderer, path.c_str());
         if (!texture) {
             return nullptr;
         }
-
+        //連想配列への登録
         m_textures[path] = texture;
         return texture;
     }
@@ -36,12 +37,12 @@ public:
             return it->second;
         }
 
-        // 最初のロード、連想配列への登録
+        // 最初のロード
         MIX_Audio* audio = MIX_LoadAudio(m_mixer, path.c_str(), false);
         if (!audio) {
             return nullptr;
         }
-
+        // 連想配列への登録
         m_audios[path] = audio;
         return audio;
 

@@ -24,7 +24,6 @@ public:
         SDL_SetRenderDrawColor(renderer, 0, 100, 255, 255); // 青い扉
         SDL_RenderFillRect(renderer, &drawRect);
 
-        // 枠線を描くとタイルっぽさが消えて「一枚の扉」に見える
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderRect(renderer, &drawRect);
     }
