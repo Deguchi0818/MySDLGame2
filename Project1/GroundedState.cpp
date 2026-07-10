@@ -6,9 +6,12 @@
 void GroundedState::handleInput(Player& player, const bool* keys) 
 {
 
-    if (player.isJumpTriggered()) {
+    if (player.isJumpTriggered() || player.getJumpBufferTimer() > 0) {
         player.velY = player.getParams().jumpPower; // ã•ûŒü‚Ö‰Á‘¬
         player.setOnGround(false);                  // Ú’n‚ğ‰ğœ
+        player.jumpCount = 1;
+
+        player.setJumpBufferTimer(0);
         player.changeState(std::make_unique<JumpState>());
         return; // ó‘Ô‚ª•Ï‚í‚Á‚½‚Ì‚Åˆ—‚ğ”²‚¯‚é
     }

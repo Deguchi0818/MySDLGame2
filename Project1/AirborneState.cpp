@@ -21,13 +21,15 @@ void AirborneState::handleInput(Player& player, const bool* keys)
         if (player.getCoyoteTimer() > 0) {
             player.velY = player.getParams().jumpPower;
             player.setCoyoteTimer(0);
+            player.jumpCount = 1;
             player.changeState(make_unique<JumpState>());
         }
-        else 
+        else if (player.jumpCount < 2)
         {
             // 空中なら何度でもフラップ(再上昇)できるようにする
-            player.setIsHovering(true);
-            player.velY = player.getParams().hoverFlapSpeed;
+            player.setIsHovering(false);
+            player.velY = player.getParams().jumpPower;
+            player.jumpCount++;
             player.changeState(make_unique<JumpState>());
         }
     }

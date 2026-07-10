@@ -1,7 +1,7 @@
 ﻿パラメータ名,値
 speed,200
 gravity,1500
-jumpPower,-500
+jumpPower,-550
 fallMultiplier,1.2
  ホバリング,
 hoverFlapSpeed,-350

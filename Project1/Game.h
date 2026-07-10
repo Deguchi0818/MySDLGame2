@@ -61,7 +61,7 @@ private:
 	struct SDLTextureDeleter { void operator()(SDL_Texture* t) const { SDL_DestroyTexture(t); } };
 	struct MixerDeleter {
 		void operator()(MIX_Mixer* m) const {
-			if (m) MIX_DestroyMixer(m);
+			//if (m) MIX_DestroyMixer(m);
 		}
 	};
 

@@ -73,6 +73,9 @@ public:
 	void updateInputState(const bool* keys) {
 		bool current = keys[SDL_SCANCODE_SPACE];
 		m_jumpTriggered = (current && !m_prevJumpKey); 
+		if(m_jumpTriggered) {
+			jumpBufferTimer = m_params.jumpBufferMax;
+		}
 		m_prevJumpKey = current;
 	}
 
@@ -85,6 +88,7 @@ public:
 	float velX = 0.0f;
 	float velY = 0.0f;
 	float m_facingDir = 1.0f; // 向き（1.0f: 右、-1.0f: 左）
+	int jumpCount = 0;
 
 	const SDL_FRect& getPrevRect() const { return m_prevRect; }
 
@@ -127,6 +131,8 @@ private:
 	const float INVINCIBLE_TIME = 1.0f;	// ダメージ後の無敵時間(秒)
 
 	AimDir m_currentAim = { 1.0f, 0.0f }; // 現在のエイム方向
+
+	int maxJumps = 2;
 
 	SDL_Texture* m_texture = nullptr;
 

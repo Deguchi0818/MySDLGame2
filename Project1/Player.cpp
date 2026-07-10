@@ -51,6 +51,7 @@ void Player::setOnGround(bool on)
 		// 着地時に垂直速度をリセットし、コヨーテタイムを付与
 		velY = 0.0f;
 		coyoteTimer = m_params.coyoteTimeMax;
+		jumpCount = 0;
 	}
 	m_onGround = on;
 }
